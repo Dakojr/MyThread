@@ -1,0 +1,15 @@
+//
+//
+//  Pour récuperer les settings de vs code
+//
+//
+//  
+//  
+//  Type download in VSCode Command Palette.
+//  
+//  Enter your GitHub Personal Access Token (or leave it blank if you want to download from a public Gist)
+//  
+//  Enter your Gist ID (or a public Gist ID).
+//  
+//  Done!
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
