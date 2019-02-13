@@ -1,30 +1,36 @@
 const Promise = require('bluebird')
 
-const UserRepositry = require('./../models/userDAO')
-const AppDAO = require('./../models/AppDAO')
+const UserDAOfs = require('./../models/userDAO')
+const AppDAOfs = require('./../models/AppDAO')
+const Userfs = require('./../class/userClass')
 
 module.exports = {
 
-    getUser: function getTheUser(req, res) {
-        const dao = new AppDAO('./db/mythread.db')
-        const UserRepo = new UserRepositry(dao)
-
-        let User
-
+    getUser: (req, res) => {
+        const dao = new AppDAOfs('./db/mythread.db')
+        const UserDAO = new UserDAOfs(dao)
         return new Promise((resolve, reject) => {
-            UserRepo.getUser()
+        UserDAO.getUser()
             .then((data) => {
-                User = data
-                return User
-            })
-            .then(function () {
-                //console.log(User)
-                resolve({user: User})
-            })
+                resolve(data)
+            })            
         })
 
-
-
+        // return new Promise((resolve, reject) => {
+        //     UserDAO.getUser()
+        //         .then((data) => {
+        //             data.forEach(element => {
+        //                 User.id_user = element.id_user
+        //                 User.username = element.username
+        //                 User.password = element.password
+        //                 User.email = element.email
+        //                 User.telephone = element.telephone
+        //                 User.date_user = element.date_user
+        //             });
+        //         })
+        //         .then(function () {
+        //             resolve(User)
+        //         })
+        // })
     }
-
 }
