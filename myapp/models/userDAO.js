@@ -1,13 +1,5 @@
-class UserClass {
-    constructor(id_user, username, password, email, telephone, date_user) {
-        this.id_user = id_user
-        this.username = username
-        this.password = password
-        this.email = email
-        this.telephone = telephone
-        this.date_user = date_user
-    }
-}
+UserClass = require('./../class/userClass')
+var bcrypt = require('bcrypt-nodejs')
 
 class UserDAO {
     constructor(dao) {
@@ -18,21 +10,51 @@ class UserDAO {
         const User = new UserClass()
         return new Promise((resolve, reject) => {
             this.dao.all(`SELECT * FROM user`)
-            .then((data) => {
-                data.forEach(element => {
-                    User.id_user = element.id_user
-                    User.username = element.username
-                    User.password = element.password
-                    User.email = element.email
-                    User.telephone = element.telephone
-                    User.date_user = element.date_user
-                });
-            })
-            .then(function () {
-                resolve(User)
-            })
+                .then((data) => {
+                    data.forEach(element => {
+                        User.id_user = element.id_user
+                        User.username = element.username
+                        User.password = element.password
+                        User.email = element.email
+                        User.telephone = element.telephone
+                        User.date_user = element.date_user
+                    });
+                })
+                .then(function () {
+                    resolve(User)
+                })
         })
     }
-}
 
+    create(username, password, email, telephone = "") {
+        return this.dao.run(
+            `INSERT INTO user (username, password, email, telephone)
+            VALUES (?, ?, ?, ?)`,
+            [username, password, email, telephone])
+    }
+
+    getUserByEmail(email) {
+        const User = new UserClass()
+        return new Promise((resolve, reject) => {
+            this.dao.all("SELECT * FROM user WHERE email = '" + email + "'")
+                .then((data) => {
+                    data.forEach(element => {
+                        User.id_user = element.id_user
+                        User.username = element.username
+                        User.password = element.password
+                        User.email = element.email
+                        User.telephone = element.telephone
+                        User.date_user = element.date_user
+                    });
+                })
+                .then(function () {
+                    resolve(User)
+                })
+        })
+    }
+
+    encryptPassword(password) {
+        return bcrypt.hashSync(password, bcrypt.genSaltSync(5), null)
+    }
+}
 module.exports = UserDAO

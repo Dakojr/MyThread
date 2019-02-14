@@ -1,5 +1,4 @@
 <!-- views/pages/index.ejs -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,6 +15,16 @@
         <h1>This is great</h1>
         <p>Welcome to templating using EJS</p>
     </div>
+    <h1><%= User.username %></h1>
+    <p>Welcome to <%= User.username %></p>
+    <p>Id User is : <%= User.id_user %></p>
+    <p>Password is : <%= User.password %></p>
+    <p>email is : <%= User.email %></p>
+    <% if (User.telephone == null || User.telephone == "") { %>
+    <% } else { %>
+    <p>telephone is : <%= User.telephone %></p>
+    <% } %>
+    <p>Register date is : <%= User.date_user %></p>
 </main>
 
 <footer>
