@@ -1,5 +1,3 @@
-var bcrypt = require('bcrypt-nodejs')
-
 class User {
     constructor(id_user, username, password, email, telephone, date_user) {
         this.id_user = id_user

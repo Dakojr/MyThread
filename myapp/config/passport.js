@@ -9,6 +9,11 @@ module.exports = function (passport) {
 
     const dao = new AppDAOfs('./db/mythread.db')
 
+
+    // =========================================================================
+    // LOCAL SIGNUP =============================================================
+    // =========================================================================
+
     // used to serialize the user for the session
     passport.serializeUser(function (user, done) {
         done(null, user.id_user);
@@ -26,7 +31,6 @@ module.exports = function (passport) {
         // by default, local strategy uses username and password, we will override with email
         usernameField: 'username',
         passwordField: 'password',
-        emailField: 'email',
         passReqToCallback: true // allows us to pass back the entire request to the callback
     },
         function (req, username, password, done) {
@@ -51,39 +55,44 @@ module.exports = function (passport) {
                             })
                     }
                 })
-            //, function (err, rows) {
-            //     console.log(rows);
-            //     console.log("above row object");
-            //     if (err)
-            //         return done(err);
-            //     if (rows.length) {
-            //         return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
-            //     } else {
-
-            //         // if there is no user with that email
-            //         // create the user
-            //         var newUserMysql = new Object();
-
-            //         newUserMysql.email = email;
-            //         newUserMysql.password = password; // use the generateHash function in our user model
-
-            //         var insertQuery = "INSERT INTO users ( email, password ) values ('" + email + "','" + password + "')";
-            //         console.log(insertQuery);
-            //         connection.query(insertQuery, function (err, rows) {
-
-            //             newUserMysql.id = rows.insertId;
-
-            //             return done(null, newUserMysql);
-            //         });
-            //     }
-            // });
         }));
+
+    passport.use('local.signin', new LocalStrategy({
+
+
+        usernameField: 'email',
+        passwordField: 'password',
+        passReqToCallback: true // allows us to pass back the entire request to the callback
+
+    },
+        function (req, email, password, done) {
+            // req.checkBody('email', 'Invalid E-mail').notEmpty().isEmail()
+            // req.checkBody('password', 'Invalid Password').notEmpty().isEmail()
+
+            var UserDAO = new UserDAOfs(dao)
+
+            dao.all("SELECT * FROM user WHERE email = '" + req.body.email + "'")
+                .then((data) => {
+                    if (!data.length) {
+                        console.log("No User Found !")
+                        return done(null, false)
+                    } else if (!UserDAO.validPassword(password, data[0].password)) {
+                        console.log("Bad PassWord !")
+                        return done(null, false)
+                    } else {
+                        UserDAO.getUserByEmail(email)
+                            .then((user) => {
+                                return done(null, user)
+                            })
+                    }
+                })
+        }))
+
+
 
     // =========================================================================
     // LOCAL LOGIN =============================================================
     // =========================================================================
-    // we are using named strategies since we have one for login and one for signup
-    // by default, if there was no name, it would just be called 'local'
 
     // passport.use('local-login', new LocalStrategy({
     //     // by default, local strategy uses username and password, we will override with email

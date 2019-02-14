@@ -56,5 +56,9 @@ class UserDAO {
     encryptPassword(password) {
         return bcrypt.hashSync(password, bcrypt.genSaltSync(5), null)
     }
+
+    validPassword(reqpassword, password) {
+        return bcrypt.compareSync(reqpassword, password, null)
+    }
 }
 module.exports = UserDAO
