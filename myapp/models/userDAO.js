@@ -21,7 +21,7 @@ class UserDAO {
                     });
                 })
                 .then(function () {
-                    resolve(User)
+                    resolve(User)                    
                 })
         })
     }
