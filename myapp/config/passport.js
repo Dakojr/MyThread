@@ -78,7 +78,8 @@ passport.use('local.signup', new LocalStrategy({
     function (req, username, password, done) {
         const dao = new AppDAOfs('./db/mythread.db')
         req.checkBody('email', 'Invalid E-mail').notEmpty().isEmail();
-        req.checkBody('password', 'Invalid Password').notEmpty().isLength({ min: 4 });
+        req.checkBody('password', 'Invalid Password').notEmpty();
+        req.check("password", "PassWord Must have 8 character, 1 UpperCase, 1 LowerCase").matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, "i");
         var errors = req.validationErrors();
         if (errors) {
             var messages = [];
