@@ -6,10 +6,10 @@ class UserDAO {
         this.dao = dao
     }
 
-    getUser() {
+    getUserByID(id) {
         const User = new UserClass()
         return new Promise((resolve, reject) => {
-            this.dao.all(`SELECT * FROM user`)
+            this.dao.all("SELECT id_user, username, email, telephone, date_user FROM user WHERE id_user = '" + id + "'")
                 .then((data) => {
                     data.forEach(element => {
                         User.id_user = element.id_user

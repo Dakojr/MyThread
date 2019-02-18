@@ -3,11 +3,10 @@ var AppDAOfs = require('./../models/AppDAO')
 var UserClass = require('./../class/userClass')
 var UserDAOfs = require('./../models/userDAO')
 var passport = require('passport')
+var RememberMeStrategy = require('passport-remember-me').Strategy
 
 // expose this function to our app using module.exports
 // module.exports = function () {
-
-
 
 // =========================================================================
 // LOCAL SIGNUP =============================================================
@@ -31,8 +30,45 @@ passport.deserializeUser(function (id, done) {
         })
 })
 
-passport.use('local.signup', new LocalStrategy({
+var tokens = {}
 
+function consumeRememberMeToken(token, fn) {
+    var uid = tokens[token];
+    // invalidate the single-use token
+    delete tokens[token];
+    return fn(null, uid);
+}
+
+function saveRememberMeToken(token, uid, fn) {
+    tokens[token] = uid;
+    return fn();
+}
+
+function issueToken(user, done) {
+    var token = utils.randomString(64);
+    saveRememberMeToken(token, user.id, function (err) {
+        if (err) { return done(err); }
+        return done(null, token);
+    });
+}
+
+passport.use(new RememberMeStrategy(
+    function (token, done) {
+        consumeRememberMeToken(token, function (err, uid) {
+            if (err) { return done(err); }
+            if (!uid) { return done(null, false); }
+
+            findById(uid, function (err, user) {
+                if (err) { return done(err); }
+                if (!user) { return done(null, false); }
+                return done(null, user);
+            });
+        });
+    },
+    issueToken
+));
+
+passport.use('local.signup', new LocalStrategy({
 
     // by default, local strategy uses username and password, we will override with email
     usernameField: 'username',
@@ -41,7 +77,16 @@ passport.use('local.signup', new LocalStrategy({
 },
     function (req, username, password, done) {
         const dao = new AppDAOfs('./db/mythread.db')
-
+        req.checkBody('email', 'Invalid E-mail').notEmpty().isEmail();
+        req.checkBody('password', 'Invalid Password').notEmpty().isLength({ min: 4 });
+        var errors = req.validationErrors();
+        if (errors) {
+            var messages = [];
+            errors.forEach(function (error) {
+                messages.push(error.msg); //msg is import by npm validator
+            })
+            return done(null, false, req.flash('error', messages));
+        }
 
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
@@ -49,7 +94,7 @@ passport.use('local.signup', new LocalStrategy({
             .then((data) => {
                 if (data.length) {
                     console.log("email already taken")
-                    return done(null, false)
+                    return done(null, false, { message: "Email is already in use !" })
                 } else {
                     var email = req.body.email
                     var UserDAO = new UserDAOfs(dao)
@@ -77,8 +122,16 @@ passport.use('local.signin', new LocalStrategy({
     function (req, email, password, done) {
         const dao = new AppDAOfs('./db/mythread.db')
 
-        // req.checkBody('email', 'Invalid E-mail').notEmpty().isEmail()
-        // req.checkBody('password', 'Invalid Password').notEmpty().isEmail()
+        req.checkBody('email', 'Invalid E-mail').notEmpty().isEmail();
+        req.checkBody('password', 'Invalid Password').notEmpty();
+        var errors = req.validationErrors();
+        if (errors) {
+            var messages = [];
+            errors.forEach(function (error) {
+                messages.push(error.msg); //msg is import by npm validator
+            })
+            return done(null, false, req.flash('error', messages));
+        }
 
         var UserDAO = new UserDAOfs(dao)
 
@@ -86,10 +139,10 @@ passport.use('local.signin', new LocalStrategy({
             .then((data) => {
                 if (!data.length) {
                     console.log("No User Found !")
-                    return done(null, false)
+                    return done(null, false, { message : "No User Found !"})
                 } else if (!UserDAO.validPassword(password, data[0].password)) {
                     console.log("Bad PassWord !")
-                    return done(null, false)
+                    return done(null, false, { message : "Bad Password !"})
                 } else {
                     UserDAO.getUserByEmail(email)
                         .then((user) => {
@@ -101,36 +154,3 @@ passport.use('local.signin', new LocalStrategy({
                 }
             })
     }))
-
-
-
-// =========================================================================
-// LOCAL LOGIN =============================================================
-// =========================================================================
-
-// passport.use('local-login', new LocalStrategy({
-//     // by default, local strategy uses username and password, we will override with email
-//     usernameField: 'email',
-//     passwordField: 'password',
-//     passReqToCallback: true // allows us to pass back the entire request to the callback
-// },
-//     function (req, email, password, done) { // callback with email and password from our form
-
-//         connection.query("SELECT * FROM `users` WHERE `email` = '" + email + "'", function (err, rows) {
-//             if (err)
-//                 return done(err);
-//             if (!rows.length) {
-//                 return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
-//             }
-
-//             // if the user is found but the password is wrong
-//             if (!(rows[0].password == password))
-//                 return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
-
-//             // all is well, return successful user
-//             return done(null, rows[0]);
-
-//         });
-//     }));
-
-// };
