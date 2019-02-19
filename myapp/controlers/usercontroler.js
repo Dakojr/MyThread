@@ -12,12 +12,11 @@ module.exports = {
         return new Promise((resolve, reject) => {
             UserDAO.getUserByID(id)
                 .then((data) => {
-                    console.log(dao)
                     dao.db.close(() => {
                         console.log("BDD CLOSE !")
                     })
                     resolve(data)
                 })
         })
-    },
+    }
 }

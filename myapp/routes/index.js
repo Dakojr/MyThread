@@ -11,18 +11,26 @@ router.use(csurfProtect); //Every routes by him is Protect by Csrf protection
 
 const utils = require('./../config/utils') //generation Token
 const UserControl = require('./../controlers/usercontroler')
+const ThreadControl = require('./../controlers/threadControlers')
 
 // NAVBAR ROUTES
 router.get('/', isLoggedIn, function (req, res, next) {
+
+  res.render('pages/index')
+})
+
+router.get('/profile', isLoggedIn, function (req, res, next) {
   UserControl.getUserByID(req.session.passport.user)
     .then((User) => {
-      res.render('pages/index', { User: User })
-    })
-});
-
-router.get('/about', isLoggedIn, function (req, res, next) {
-  res.render('pages/about')
-});
+      ThreadControl.getThreadByIdUser(User.id_user)
+        .then((Threads) => {
+          ThreadControl.readThread('./thread/1.html')
+            .then((text_thread) => {
+              res.render('pages/profile', { User: User, text_thread: text_thread, Threads: Threads })
+            })
+        })
+    });
+})
 
 //USER ROUTES
 
@@ -67,12 +75,12 @@ router.post('/signin', passport.authenticate('local.signin', {
   });
 
 
-  router.get('/logout', function(req, res){
-    // clear the remember me cookie when logging out
-    res.clearCookie('remember_me');
-    req.logout();
-    res.redirect('/');
-  });
+router.get('/logout', function (req, res) {
+  // clear the remember me cookie when logging out
+  res.clearCookie('remember_me');
+  req.logout();
+  res.redirect('/');
+});
 
 
 module.exports = router
@@ -109,8 +117,8 @@ function saveRememberMeToken(token, uid, fn) {
 
 
 function consumeRememberMeToken(token, fn) {
-    var uid = tokens[token];
-    // invalidate the single-use token
-    delete tokens[token];
-    return fn(null, uid);
+  var uid = tokens[token];
+  // invalidate the single-use token
+  delete tokens[token];
+  return fn(null, uid);
 }

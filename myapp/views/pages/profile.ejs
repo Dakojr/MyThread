@@ -1,0 +1,59 @@
+<!-- views/pages/about.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../partials/head %>
+</head>
+
+<body class="container">
+
+    <header>
+        <% include ../partials/header %>
+    </header>
+
+    <main>
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="jumbotron">
+                    <h1>This is great</h1>
+                    <p>Welcome to templating using EJS</p>
+                </div>
+                <h1><%= User.username %></h1>
+                <p>Welcome to <%= User.username %></p>
+                <p>Id User is : <%= User.id_user %></p>
+                <p>Password is : <%= User.password %></p>
+                <p>email is : <%= User.email %></p>
+                <% if (User.telephone == null || User.telephone == "") { %>
+                <% } else { %>
+                <p>telephone is : <%= User.telephone %></p>
+                <% } %>
+                <p>Register date is : <%= User.date_user %></p>
+            </div>
+            <div class="col-sm-4">
+                <div class="well">
+                    <h3>Look I'm A Sidebar!</h3>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <h1> THREAD <h1>
+            <h3><%= Threads.id_thread %></h3>
+            <h3><%= Threads.thread_name %></h3>
+            <%for(var i = 0; i < text_thread.length; i++) {%>
+            <h3><%= text_thread[i] %></h3>
+            <% } %>
+            <h3><%= Threads.date_thread %></h3>
+            <h3><%= Threads.type %></h3>
+            <h3><%= Threads.id_user %></h3>
+        </div>
+    </main>
+
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+
+</body>
+
+</html>
