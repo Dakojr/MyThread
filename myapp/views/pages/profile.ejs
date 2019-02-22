@@ -5,48 +5,161 @@
 
 <head>
     <% include ../partials/head %>
+    <link rel="stylesheet" href="stylesheets/profile.css">
 </head>
 
-<body class="container">
+<body>
 
     <header>
         <% include ../partials/header %>
     </header>
 
     <main>
-        <div class="row">
-            <div class="col-sm-8">
-                <div class="jumbotron">
-                    <h1>This is great</h1>
-                    <p>Welcome to templating using EJS</p>
-                </div>
-                <h1><%= User.username %></h1>
-                <p>Welcome to <%= User.username %></p>
-                <p>Id User is : <%= User.id_user %></p>
-                <p>Password is : <%= User.password %></p>
-                <p>email is : <%= User.email %></p>
-                <% if (User.telephone == null || User.telephone == "") { %>
-                <% } else { %>
-                <p>telephone is : <%= User.telephone %></p>
-                <% } %>
-                <p>Register date is : <%= User.date_user %></p>
-            </div>
-            <div class="col-sm-4">
-                <div class="well">
-                    <h3>Look I'm A Sidebar!</h3>
-                </div>
-            </div>
+        <div class="container-fluid">
+            <!-- <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg"
+                preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 140x140">
+                <title>Placeholder</title>
+                <rect width="100%" height="100%" fill="#777"></rect>
+            </svg> -->
         </div>
-        <div class="container">
-            <h1> THREAD <h1>
-            <h3><%= Threads.id_thread %></h3>
-            <h3><%= Threads.thread_name %></h3>
-            <%for(var i = 0; i < text_thread.length; i++) {%>
-            <h3><%= text_thread[i] %></h3>
-            <% } %>
-            <h3><%= Threads.date_thread %></h3>
-            <h3><%= Threads.type %></h3>
-            <h3><%= Threads.id_user %></h3>
+
+        <div class="rela-block container">
+            <div class="rela-block profile-card">
+                <div class="profile-pic" id="profile_pic"></div>
+                <div class="rela-block profile-name-container">
+                    <div class="rela-block user-name" id="user_name">@<%= User.username %></div>
+                </div>
+                <div class="d-flex justify-content-around">
+                    <strong>Follow</strong>
+                    <strong>Follower</strong>
+                    <strong>Thread</strong>
+                </div>
+                <div class="d-flex justify-content-around">
+                    <p>10</p>
+                    <p>15</p>
+                    <p>20</p>
+                </div>
+                <div class="album py-5 bg-light">
+                    <div class="container">
+                        <div class="row">
+
+                            <div class="col-md-4">
+                                <div class="card mb-4 shadow-sm">
+                                    <div class="card-body">
+                                        <h5 class="text-center"><%= Threads.thread_name %></h5>
+                                        <p class="card-text"><%for(var i = 0; i < text_thread.length; i++) {%>
+                                            <p><%= text_thread[i] %></p>
+                                            <% } %></p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary">Like</button>
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary">Edit</button>
+                                            </div>
+                                            <small class="text-muted"><%= Threads.date_thread %></small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="card mb-4 shadow-sm">
+                                    <div class="card-body">
+                                        <p class="card-text">This is a wider card with supporting text below as a
+                                            natural
+                                            lead-in to additional content. This content is a little bit longer.</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary">View</button>
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary">Edit</button>
+                                            </div>
+                                            <small class="text-muted">9 mins</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card mb-4 shadow-sm">
+                                    <div class="card-body">
+                                        <p class="card-text">This is a wider card with supporting text below as a
+                                            natural
+                                            lead-in to additional content. This content is a little bit longer.</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary">View</button>
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary">Edit</button>
+                                            </div>
+                                            <small class="text-muted">9 mins</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card mb-4 shadow-sm">
+                                    <div class="card-body">
+                                        <p class="card-text">This is a wider card with supporting text below as a
+                                            natural
+                                            lead-in to additional content. This content is a little bit longer.</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary">View</button>
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary">Edit</button>
+                                            </div>
+                                            <small class="text-muted">9 mins</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card mb-4 shadow-sm">
+                                    <div class="card-body">
+                                        <p class="card-text">This is a wider card with supporting text below as a
+                                            natural
+                                            lead-in to additional content. This content is a little bit longer.</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary">View</button>
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary">Edit</button>
+                                            </div>
+                                            <small class="text-muted">9 mins</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card mb-4 shadow-sm">
+                                    <div class="card-body">
+                                        <p class="card-text">This is a wider card with supporting text below as a
+                                            natural
+                                            lead-in to additional content. This content is a little bit longer.</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary">View</button>
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-secondary">Edit</button>
+                                            </div>
+                                            <small class="text-muted">9 mins</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="rela-block content">
+                <div class="rela-inline image"></div>
+            </div>
         </div>
     </main>
 

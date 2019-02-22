@@ -13,27 +13,17 @@
     </header>
 
     <main>
-        <div class="jumbotron">
-            <h1>This is great</h1>
-            <p>Welcome to templating using EJS</p>
-        </div>
-        <div class="container">
-            <h3>Hello Thread</h3>
-            <h3><%#= Threads.id_thread %></h3>
-            <h3><%#= Threads.thread_name %></h3>
-            <%#for(var i = 0; i < text_thread.length; i++) {%>
-            <h3><%#= text_thread[i] %></h3>
-            <%# } %>
-            <h3><%#= Threads.date_thread %></h3>
-            <h3><%#= Threads.type %></h3>
-            <h3><%#= Threads.id_user %></h3>
-        </div>
+    <%for(var i = 0; i < threads.length; i++) {%>
+    <p><%= threads[i].username %></p>
+    <p><%= threads[i].thread_name %></p>
+    <p><%= threads[i].pathfile_thread %></p>
+    <p><%= threads[i].date_thread %></p>
+    <% } %></p>
     </main>
 
     <footer>
         <% include ../partials/footer %>
     </footer>
-
 </body>
 
 </html>

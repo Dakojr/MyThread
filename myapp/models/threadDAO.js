@@ -14,12 +14,36 @@ class ThreadDAO {
                         Thread.id_thread = element.id_thread
                         Thread.thread_name = element.thread_name
                         Thread.pathfile_thread = element.pathfile_thread
+                        Thread.date_thread = element.date_thread
                         Thread.type = element.type
                         Thread.id_user = element.id_user
                     });
                 })
                 .then(function () {
                     resolve(Thread)
+                })
+        })
+    }
+
+    getAllThread() {
+        var arr = []
+        return new Promise((resolve, reject) => {
+            this.dao.all("SELECT t.*, u.username FROM thread t, user u WHERE t.id_user = u.id_user")
+                .then((data) => {
+                    data.forEach(element => {
+                        const Thread = new ThreadClass()
+                        Thread.id_thread = element.id_thread
+                        Thread.thread_name = element.thread_name
+                        Thread.pathfile_thread = element.pathfile_thread
+                        Thread.date_thread = element.date_thread
+                        Thread.type = element.type
+                        Thread.id_user = element.id_user
+                        Thread.username = element.username
+                        arr.push(Thread)
+                    });
+                })
+                .then(function () {
+                    resolve(arr)
                 })
         })
     }

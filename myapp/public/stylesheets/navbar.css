@@ -2,10 +2,20 @@
     margin-right: 20%;
 }
 
-.left {
-    margin-left: 20%;
+.badge {
+    color: #FA7268;
 }
 
-.profile {
-    padding-right: 10em;
+.navbar {
+    margin-bottom: 1em;
+}
+
+@media (min-width: 992px) {
+    .left {
+        margin-left: 20%;
+    }
+
+    .form-inline {
+        flex-flow: unset;
+    }
 }

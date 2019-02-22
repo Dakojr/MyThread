@@ -1,5 +1,4 @@
 const express = require('express');
-const Promise = require('bluebird')
 var passport = require('passport');
 require('./../config/passport');
 var csurf = require('csurf')
@@ -15,8 +14,11 @@ const ThreadControl = require('./../controlers/threadControlers')
 
 // NAVBAR ROUTES
 router.get('/', isLoggedIn, function (req, res, next) {
+  ThreadControl.getAllThread()
+  .then((data) => {
+  res.render('pages/index', { message:"message", threads: data})
 
-  res.render('pages/index')
+  })
 })
 
 router.get('/profile', isLoggedIn, function (req, res, next) {
@@ -114,7 +116,6 @@ function saveRememberMeToken(token, uid, fn) {
   tokens[token] = uid;
   return fn();
 }
-
 
 function consumeRememberMeToken(token, fn) {
   var uid = tokens[token];

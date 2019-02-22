@@ -20,6 +20,20 @@ module.exports = {
         })
     },
 
+    getAllThread: () => {
+        const dao = new AppDAOfs('./db/mythread.db')
+        const ThreadDAO = new ThreadDAOfs(dao)
+        return new Promise((resolve, reject) => {
+            ThreadDAO.getAllThread()
+                .then((data) => {
+                    dao.db.close(() => {
+                        console.log("BDD CLOSE !")
+                    })
+                    resolve(data)
+                })
+        })
+    },
+
     readThread: (pathfile) => {
         return new Promise((resolve, reject) => {
             fs.open(pathfile, 'r', (err, fd) => {
