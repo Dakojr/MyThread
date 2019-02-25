@@ -39,6 +39,7 @@ class ThreadDAO {
                         Thread.type = element.type
                         Thread.id_user = element.id_user
                         Thread.username = element.username
+                        Thread.text = null
                         arr.push(Thread)
                     });
                 })

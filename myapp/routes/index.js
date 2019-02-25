@@ -2,6 +2,7 @@ const express = require('express');
 var passport = require('passport');
 require('./../config/passport');
 var csurf = require('csurf')
+var async = require('async')
 
 const router = express.Router()
 
@@ -14,19 +15,88 @@ const ThreadControl = require('./../controlers/threadControlers')
 
 // NAVBAR ROUTES
 router.get('/', isLoggedIn, function (req, res, next) {
-  ThreadControl.getAllThread()
-  .then((data) => {
-  res.render('pages/index', { message:"message", threads: data})
 
-  })
+  const start = () => {
+    return new Promise((resolve, reject) => {
+      ThreadControl.getAllThread()
+        .then((data) => {
+          resolve(data)
+        })
+    })
+  }
+
+  const fuck = (arrayThread) => {
+    var fucka = []
+    return new Promise((resolve, reject) => {
+      arrayThread.forEach(element => {
+        ThreadControl.readThread(element.pathfile_thread)
+          .then((data) => {
+            element.text = data
+            fucka.push(data)
+            resolve(arrayThread)
+          })
+      });
+
+    })
+  }
+
+  // var newThreads = []
+
+  // const start = async () => {
+  //   AllThreads = await ThreadControl.getAllThread().then((Threads) => {
+  //     return Threads
+  //   })
+  //   await AllThreads.forEach(element => {
+  //       ThreadControl.readThread(element.pathfile_thread).then((data) => {
+  //         element.text = data
+  //         console.log("FUUUUUUCKL")
+  //         newThreads.push(element)
+  //       })        
+  //   })
+  // }
+
+
+  // ThreadControl.getAllThread()
+  //   .then((Threads) => {
+  //     const start = async () => {
+  //       await async.each(Threads, async (element) => {
+  //         console.log(element)
+  //       })
+  //       console.log('Done')
+  //     }
+
+  start()
+    .then((data) => {
+      fuck(data)
+        .then((Threads) => {
+          res.render('pages/index', { message: "message", threads: Threads })
+        })
+    })
+
 })
+
+
+
+// Threads.forEach(element => {
+//   ThreadControl.readThread(element.pathfile_thread)
+//     .then((data) => {
+//       element.text = data
+//       console.log(data)
+//     })
+// })
+
+// console.log("heho")
+// 
+
+
+
 
 router.get('/profile', isLoggedIn, function (req, res, next) {
   UserControl.getUserByID(req.session.passport.user)
     .then((User) => {
       ThreadControl.getThreadByIdUser(User.id_user)
         .then((Threads) => {
-          ThreadControl.readThread('./thread/1.html')
+          ThreadControl.readThread(Threads.pathfile_thread)
             .then((text_thread) => {
               res.render('pages/profile', { User: User, text_thread: text_thread, Threads: Threads })
             })
@@ -83,7 +153,6 @@ router.get('/logout', function (req, res) {
   req.logout();
   res.redirect('/');
 });
-
 
 module.exports = router
 

@@ -48,7 +48,6 @@ module.exports = {
                     }
                     if (bytes > 0) {
                         var content = buffr.slice(0, bytes).toString().split("\n")
-                        console.log(content)
                     }
                     fs.close(fd, (err) => {
                         if (err) {
