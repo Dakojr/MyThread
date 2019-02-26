@@ -1,3 +1,7 @@
+nav {
+    background-color: #F5F5F5;
+}
+
 .right {
     margin-right: 20%;
 }
@@ -10,7 +14,11 @@
     margin-bottom: 1em;
 }
 
-@media (min-width: 992px) {
+a {
+    font-weight: bold;
+}
+
+@media (min-width: 1145px) {
     .left {
         margin-left: 20%;
     }

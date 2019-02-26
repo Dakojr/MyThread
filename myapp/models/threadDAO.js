@@ -1,3 +1,5 @@
+const moment = require('moment')
+
 ThreadClass = require('./../class/threadClass')
 
 class ThreadDAO {
@@ -35,7 +37,7 @@ class ThreadDAO {
                         Thread.id_thread = element.id_thread
                         Thread.thread_name = element.thread_name
                         Thread.pathfile_thread = element.pathfile_thread
-                        Thread.date_thread = element.date_thread
+                        Thread.date_thread = moment(element.date_thread).fromNow()
                         Thread.type = element.type
                         Thread.id_user = element.id_user
                         Thread.username = element.username

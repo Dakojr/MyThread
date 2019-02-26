@@ -9,6 +9,8 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="stylesheets/button.css">
+    <link rel="stylesheet" href="stylesheets/popup.css">
 
 </head>
 
@@ -18,19 +20,21 @@
         <% include ../partials/header %>
     </header>
 
-    <main>
+    <main style="margin-top: 250px;">
 
-        <div class="card" style="position: absolute;">
+        <% include ./newthread.ejs %>
+
+        <% for(var i = 0; i < threads.length; i++) { %>
+        <%= i %>
+
+        <div class="card">
             <div class="box">
                 <div class="img" style="background-color: black; float: left;">
                 </div>
-                <h2 style="text-align: left; margin-left: 4em;  ">@<%= threads[0].username %><span class="text-muted"
-                        style="margin-left: 3em;"><%= threads[0].date_thread %></span></h2>
-                <h4 style="margin-top: 50px; margin-bottom: 1em;"><%= threads[0].thread_name %></h4>
-                <p style="">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
-                    doloremque laudantium,
-                    totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae
-                    dicta sunt explicabo. Nemo enim ipsam voluptatem quia volupta</p>
+                <h2 style="text-align: left; margin-left: 3.5em; ">@<%= threads[i].username %></h2>
+                <span class="text-muted" style="float: left; margin-left: 1em;"><%= threads[i].date_thread %></span>
+                <h4 style="margin-top: 50px; margin-bottom: 1em;"><%= threads[i].thread_name %></h4>
+                <p><%= threads[i].text %></p>
                 <span class="fixed-bottom" style="justify-content: center; margin-bottom: 1em;">
                     <ul>
                         <li><a href="#"><i class="fas fa-heart" aria-hidden="true"></i></a></li>
@@ -38,12 +42,48 @@
                 </span>
             </div>
         </div>
+
+        <% } %>
+
+        <div class="form-popup" id="myForm">
+            <form action="/action_page.php" class="form-container text-center">
+                <h1>Thread</h1>
+
+                <label for="title"><b>Thread Title</b></label>
+                <input type="text" class="form-control" placeholder="Enter A Title..." name="title" required>
+
+                <label for="thread_content"><b>Thread Content</b></label>
+                <textarea class="form-control" rows="3"></textarea>
+                <div class="d-flex justify-content-between">
+                    <a onclick="closeForm()"><i class="far fa-times-circle fa-lg" style="color: #FA7268;"
+                            onmouseover="this.style.color='#3F82C7';" onmouseout="this.style.color='#FA7268';"></i></a>
+                    <button class="btn btn-primary my-2 my-sm-0" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
     </main>
+
+
+
+    <script>
+        function openForm() {
+            document.getElementById("myForm").style.display = "block";
+        }
+
+        function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+        }
+    </script>
+    </div>
+
+
 
 
     <footer class="fixed-bottom">
         <% include ../partials/footer %>
     </footer>
+
+
 </body>
 
 </html>

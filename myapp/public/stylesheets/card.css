@@ -1,9 +1,3 @@
-body {
-    margin:0;
-    padding:0;
-    background:#fbfbfb;
-}
-
 p {
     font-size: 20px;
 }
@@ -80,31 +74,19 @@ p {
     }
 }
 
-@media (max-width: 1180px) {
-    .card {
-        min-height: 600px;
-    }
-}
+
 
 @media (max-width: 900px) {
-    .card {
-        min-height: 700px;
+    h2, h4, p {
+        font-size: 16px;
     }
 }
 
 @media (max-width: 800px) {
     .card {
+        margin-top: 5em; 
         min-height: 550px;
-
-    }
-    h2, h4, p {
-        font-size: 16px;
-    }
-}
-@media (min-width: 800px) {
-    .card {
-        min-height: 550px;
-
+        width: 400px;
     }
     h2, h4, p {
         font-size: 16px;
