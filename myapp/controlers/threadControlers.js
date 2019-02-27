@@ -58,5 +58,39 @@ module.exports = {
                 })
             })
         })
+    },
+
+    newThreadFile: (id_user, filename, content) => {
+
+        fs.mkdir('./thread/' + id_user, { recursive: true }, (err) => {
+            if (err) {
+                throw err
+            } else {
+                console.log("Folder is Create")
+            }
+        })
+        fs.appendFile('./thread/' + id_user + "/" + filename + '.html', content, (err) => {
+            if (err) {
+                throw err
+            } else {
+                console.log("File is Create")
+            }
+        })
+
+    },
+
+    newThread: (thread_name, pathfile_thread, TYPE, id_user) => {
+        const dao = new AppDAOfs('./db/mythread.db')
+        const ThreadDAO = new ThreadDAOfs(dao)
+        return new Promise((resolve, reject) => {
+            ThreadDAO.newThread(thread_name, pathfile_thread, TYPE, id_user)
+                .then(() => {
+                    console.log('PROMISE IS DONE')
+                    dao.db.close(() => {
+                        console.log("BDD CLOSE !")
+                    })
+                    resolve('ITS OKAAAAAY')
+                })
+        })
     }
 }

@@ -30,7 +30,7 @@ class ThreadDAO {
     getAllThread() {
         var arr = []
         return new Promise((resolve, reject) => {
-            this.dao.all("SELECT t.*, u.username FROM thread t, user u WHERE t.id_user = u.id_user")
+            this.dao.all("SELECT t.*, u.username FROM thread t, user u WHERE t.id_user = u.id_user ORDER BY t.date_thread DESC")
                 .then((data) => {
                     data.forEach(element => {
                         const Thread = new ThreadClass()
@@ -48,6 +48,15 @@ class ThreadDAO {
                 .then(function () {
                     resolve(arr)
                 })
+        })
+    }
+
+    newThread(thread_name, pathfile_thread, type, id_user) {
+        return new Promise((resolve, reject) => {
+            this.dao.run(
+                `INSERT INTO thread (thread_name, pathfile_thread, TYPE, id_user)
+                VALUES (?, ?, ?, ?)`,
+                [thread_name, pathfile_thread, type, id_user])
         })
     }
 }

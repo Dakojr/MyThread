@@ -6,7 +6,6 @@
     <% include ../partials/head %>
     <link rel="stylesheet" href="stylesheets/card.css">
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="stylesheets/button.css">
@@ -30,8 +29,8 @@
         <div class="card">
             <div class="box">
                 <div class="img" style="background-color: black; float: left;">
-                </div>
-                <h2 style="text-align: left; margin-left: 3.5em; ">@<%= threads[i].username %></h2>
+                </div>                
+                <a href="/profiles/<%- threads[i].username -%>"><h2 style="text-align: left; margin-left: 3.5em; ">@<%= threads[i].username %></h2></a>
                 <span class="text-muted" style="float: left; margin-left: 1em;"><%= threads[i].date_thread %></span>
                 <h4 style="margin-top: 50px; margin-bottom: 1em;"><%= threads[i].thread_name %></h4>
                 <p><%= threads[i].text %></p>
@@ -46,19 +45,21 @@
         <% } %>
 
         <div class="form-popup" id="myForm">
-            <form action="/action_page.php" class="form-container text-center">
+            <form action="/thread" class="form-container text-center" method="post">
+                <a onclick="closeForm()"><i class="far fa-times-circle fa-lg" style="color: #FA7268; float: right;"
+                        onmouseover="this.style.color='#3F82C7';" onmouseout="this.style.color='#FA7268';"></i></a>
                 <h1>Thread</h1>
 
                 <label for="title"><b>Thread Title</b></label>
                 <input type="text" class="form-control" placeholder="Enter A Title..." name="title" required>
 
                 <label for="thread_content"><b>Thread Content</b></label>
-                <textarea class="form-control" rows="3"></textarea>
-                <div class="d-flex justify-content-between">
-                    <a onclick="closeForm()"><i class="far fa-times-circle fa-lg" style="color: #FA7268;"
-                            onmouseover="this.style.color='#3F82C7';" onmouseout="this.style.color='#FA7268';"></i></a>
-                    <button class="btn btn-primary my-2 my-sm-0" type="submit">Submit</button>
+                <textarea type="text" class="form-control"  placeholder="Enter Some Content..." rows="3" name="thread_content" maxlength="255"></textarea>
+                <div class="marge-top">
+                    <button class="btn btn-primary my-2 my-sm-0 marge-top" type="submit"
+                        style="float: right;">Submit</button>
                 </div>
+                <input type="hidden" name="_csrf" value="<%= csurfToken %>">
             </form>
         </div>
     </main>

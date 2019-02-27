@@ -13,7 +13,9 @@ const utils = require('./../config/utils') //generation Token
 const UserControl = require('./../controlers/usercontroler')
 const ThreadControl = require('./../controlers/threadControlers')
 
-// NAVBAR ROUTES
+
+// HOME PAGE
+
 router.get('/', isLoggedIn, function (req, res, next) {
 
   const start = () => {
@@ -43,7 +45,6 @@ router.get('/', isLoggedIn, function (req, res, next) {
           })
       })
       await waitFor(20)
-      console.log(array)
       resolve(array)
     })
   }
@@ -52,10 +53,21 @@ router.get('/', isLoggedIn, function (req, res, next) {
     .then((data) => {
       ReadPushText(data)
         .then((Threads) => {
-          res.render('pages/index', { message: "message", threads: Threads })
+          res.render('pages/index', { message: "message", threads: Threads, csurfToken: req.csrfToken() })
         })
     })
 
+})
+
+router.post('/thread', isLoggedIn, (req, res, next) => {
+  ThreadControl.newThreadFile(req.session.passport.user, req.body.title, req.body.thread_content)
+  ThreadControl.newThread(req.body.title, './thread/' + req.session.passport.user + '/' + req.body.title + '.html', "N", req.session.passport.user)
+  res.redirect('/')
+})
+
+router.get('/profiles/:username', isLoggedIn, (req, res, next) => {  
+  console.log(req.params)
+  res.render('pages/profiles', { username : req.params})
 })
 
 //USER ROUTES
