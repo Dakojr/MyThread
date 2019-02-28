@@ -1,12 +1,12 @@
 <!-- views/partials/header.ejs -->
-<nav class="navbar navbar-expand-lg navbar-light">
+<nav class="navbar navbar-expand-xl navbar-light bg-light">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto left">
+        <ul class="navbar-nav mr-auto">
             <li class="nav-item">
                 <a class="nav-link" href="/">MyThread</a>
             </li>
@@ -20,7 +20,7 @@
         </ul>
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link open-button" href="#" onclick="openForm()"><i class="fas fa-pen-alt fa-lg" style="color: #FA7268;"
+                <a class="nav-link open-button" href="#" data-toggle="modal" data-target="#newthread"><i class="fas fa-pen-alt fa-lg" style="color: #FA7268;"
                         onmouseover="this.style.color='#3F82C7';" onmouseout="this.style.color='#FA7268';"  ></i></a>
             </li>
             <li class="nav-item">

@@ -4,12 +4,7 @@
 
 <head>
     <% include ../partials/head %>
-    <link rel="stylesheet" href="stylesheets/card.css">
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="stylesheets/button.css">
-    <link rel="stylesheet" href="stylesheets/popup.css">
+    <link rel="stylesheet" href="stylesheets/home.css">
 
 </head>
 
@@ -19,66 +14,63 @@
         <% include ../partials/header %>
     </header>
 
-    <main style="margin-top: 250px;">
-
-        <% include ./newthread.ejs %>
-
+    <main>
         <% for(var i = 0; i < threads.length; i++) { %>
-        <%= i %>
-
-        <div class="card">
-            <div class="box">
-                <div class="img" style="background-color: black; float: left;">
-                </div>                
-                <a href="/profiles/<%- threads[i].username -%>"><h2 style="text-align: left; margin-left: 3.5em; ">@<%= threads[i].username %></h2></a>
-                <span class="text-muted" style="float: left; margin-left: 1em;"><%= threads[i].date_thread %></span>
-                <h4 style="margin-top: 50px; margin-bottom: 1em;"><%= threads[i].thread_name %></h4>
-                <p><%= threads[i].text %></p>
-                <span class="fixed-bottom" style="justify-content: center; margin-bottom: 1em;">
-                    <ul>
-                        <li><a href="#"><i class="fas fa-heart" aria-hidden="true"></i></a></li>
-                    </ul>
-                </span>
-            </div>
+        <div class="container rounded p-3 mb-5 bg-white rounded">
+            <img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png" alt="Responsive image"
+                class="img-fluid rounded-circle">
+            <small class="text-muted date-thread"><%= threads[i].date_thread %></small>
+            <a href="/profiles?<%- threads[i].username -%>">
+                <h5>@<%= threads[i].username %></h5>
+            </a>
+            <h4 class="text-center"><%= threads[i].thread_name %></h4>
+            <p class="wordwrap"><%= threads[i].text %></p>
+            <a href="#" class="bottom-heart"> <i id="icon" class="fas fa-heart font-awesome"></i> </a>
         </div>
 
         <% } %>
+        <div class="container" id="myForm">
 
-        <div class="form-popup" id="myForm">
-            <form action="/thread" class="form-container text-center" method="post">
-                <a onclick="closeForm()"><i class="far fa-times-circle fa-lg" style="color: #FA7268; float: right;"
-                        onmouseover="this.style.color='#3F82C7';" onmouseout="this.style.color='#FA7268';"></i></a>
-                <h1>Thread</h1>
-
-                <label for="title"><b>Thread Title</b></label>
-                <input type="text" class="form-control" placeholder="Enter A Title..." name="title" required>
-
-                <label for="thread_content"><b>Thread Content</b></label>
-                <textarea type="text" class="form-control"  placeholder="Enter Some Content..." rows="3" name="thread_content" maxlength="255"></textarea>
-                <div class="marge-top">
-                    <button class="btn btn-primary my-2 my-sm-0 marge-top" type="submit"
-                        style="float: right;">Submit</button>
-                </div>
-                <input type="hidden" name="_csrf" value="<%= csurfToken %>">
-            </form>
         </div>
+
+
+        <div class="modal fade" id="newthread" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header d-flex justify-content-center">
+                        <h4 class="">New Thread</h4>
+                        <i class="far fa-times-circle fa-lg ml-auto p-2" data-dismiss="modal"
+                            style="color: #FA7268; float: right;" onmouseover="this.style.color='#3F82C7';"
+                            onmouseout="this.style.color='#FA7268';"></i>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/thread/newthread" method="POST">
+                            <div class="form-group text-center">
+                                <strong for="title">Title</strong>
+                                <input type="text" class="form-control" name="title" id="title" placeholder="Enter a title">
+                            </div>
+                            <div class="form-group text-center">
+                                <label class="text-muted" for="thread_content">Tell me your thread</label>
+                                <textarea type="text" class="form-control" maxlength="255" rows="5" name="thread_content"
+                                    placeholder="maximum of 255 characters"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="float: right;">Thread</button>
+                            <input type="hidden" name="_csrf" value="<%= csurfToken %>">
+                            <!-- Protect the page with a token -->
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
 
-
-
-    <script>
-        function openForm() {
-            document.getElementById("myForm").style.display = "block";
-        }
-
-        function closeForm() {
-            document.getElementById("myForm").style.display = "none";
-        }
-    </script>
     </div>
 
-
-
+    <script src="scriptView/scriptHeart.js"></script>
 
     <footer class="fixed-bottom">
         <% include ../partials/footer %>

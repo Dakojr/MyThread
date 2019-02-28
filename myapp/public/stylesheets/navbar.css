@@ -1,29 +1,14 @@
-nav {
-    background-color: #F5F5F5;
-}
-
-.right {
+.navbar-collapse {
+    margin-left: 20%;
     margin-right: 20%;
 }
 
-.badge {
-    color: #FA7268;
-}
-
-.navbar {
-    margin-bottom: 1em;
-}
-
-a {
+.nav-link {
     font-weight: bold;
 }
 
-@media (min-width: 1145px) {
-    .left {
-        margin-left: 20%;
-    }
-
-    .form-inline {
-        flex-flow: unset;
+@media (max-width: 1200px) {
+    .navbar-collapse {
+        margin-left: 0%;
     }
 }

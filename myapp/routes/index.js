@@ -59,31 +59,89 @@ router.get('/', isLoggedIn, function (req, res, next) {
 
 })
 
-router.post('/thread', isLoggedIn, (req, res, next) => {
+router.post('/thread/newthread', isLoggedIn, (req, res, next) => {
   ThreadControl.newThreadFile(req.session.passport.user, req.body.title, req.body.thread_content)
   ThreadControl.newThread(req.body.title, './thread/' + req.session.passport.user + '/' + req.body.title + '.html', "N", req.session.passport.user)
   res.redirect('/')
 })
 
-router.get('/profiles/:username', isLoggedIn, (req, res, next) => {  
+router.get('/profiles?:username', isLoggedIn, (req, res, next) => {
   console.log(req.params)
-  res.render('pages/profiles', { username : req.params})
+  res.render('pages/profiles', { username: req.params })
 })
 
 //USER ROUTES
 
 //PROFIL
 router.get('/profile', isLoggedIn, function (req, res, next) {
-  UserControl.getUserByID(req.session.passport.user)
-    .then((User) => {
-      ThreadControl.getThreadByIdUser(User.id_user)
-        .then((Threads) => {
-          ThreadControl.readThread(Threads.pathfile_thread)
-            .then((text_thread) => {
-              res.render('pages/profile', { User: User, text_thread: text_thread, Threads: Threads })
+  // UserControl.getUserByID(req.session.passport.user)
+  //   .then((User) => {
+  //     ThreadControl.getAllThreadByIdUser(req.session.passport.user)
+  //       .then((Threads) => {
+  //         console.log(Threads)
+  //         ThreadControl.readThread(Threads.pathfile_thread)
+  //           .then((text_thread) => {
+  //             console.log(text_thread)
+
+  //             res.render('pages/profile', { User: User, text_thread: text_thread, Threads: Threads })
+  //           })
+  //       })
+  //   });
+
+  const getUser = () => {
+    return new Promise((resolve, reject) => {
+      UserControl.getUserByID(req.session.passport.user)
+        .then((User) => {
+          resolve(User)
+        })
+    })
+  }
+
+  const start = () => {
+    return new Promise((resolve, reject) => {
+      ThreadControl.getAllThreadByIdUser(req.session.passport.user)
+        .then((data) => {
+          resolve(data)
+        })
+    })
+  }
+
+  const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
+
+  async function asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index += 1) {
+      await callback(array[index], index, array);
+    }
+  }
+
+  const ReadPushText = async (array) => {
+    return new Promise(async (resolve, reject) => {
+      await asyncForEach(array, async (element) => {
+        //await waitFor(20)
+        ThreadControl.readThread(element.pathfile_thread)
+          .then((data) => {
+            element.text = data
+          })
+      })
+      await waitFor(20)
+      resolve(array)
+    })
+  }
+
+  getUser()
+    .then((User) => { // getall about the User
+      start()
+        .then((data) => { //threads without text
+          ReadPushText(data)
+            .then((Threads) => { //Threads with Text
+              res.render('pages/profile', { message: "message", User: User, threads: Threads })
             })
         })
-    });
+    })
+
+
+
+
 })
 
 //SIGN UP
@@ -94,7 +152,7 @@ router.get('/signup', notLoggedIn, function (req, res, next) {
 });
 
 // When Sign Up is Submit if doesn't get an error
-router.post('/signup', passport.authenticate('local.signup', {
+router.post('/signup', passport.authenticate('local.signup', {  
   successRedirect: '/',
   failureRedirect: '/signup',
   failureFlash: true
