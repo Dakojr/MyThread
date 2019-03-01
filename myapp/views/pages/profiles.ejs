@@ -3,10 +3,51 @@
 
 <head>
     <% include ../partials/head %>
+    <link rel="stylesheet" href="stylesheets/profile.css">
 </head>
 
 <body>
+
     <header>
         <% include ../partials/header %>
     </header>
+
+    <main>
+        <img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png" alt="Responsive image"
+            class="img-fluid rounded-circle">
+        <div class="container">
+            <div class="bottom">
+                <h3>@<%= User.username %></h3>
+                <div class="justify-content-between d-flex">
+                    <strong>Follower</strong>
+                    <strong>Follow</strong>
+                    <strong>Threads</strong>
+                </div>
+                <div class="justify-content-between d-flex">
+                    <p class="lead">100</p>
+                    <p class="lead">200</p>
+                    <p class="lead">300</p>
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <div class="row d-flex justify-content-around">
+
+            <% for(var i = 0; i < threads.length; i++) { %>
+            <div class="thread">
+                <img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png"
+                    alt="Responsive image" class="img-thread rounded-circle">
+                <small class="text-muted date-thread"><%= threads[i].date_thread %></small>
+                <h6>@<%= User.username %></h6>
+                <h4 class="text-center thread-name"><%= threads[i].thread_name %></h4>
+                <p class="wordwrap"><%= threads[i].text %>
+                </p>
+                <a href="#" class="bottom-heart"> <i id="icon" class="fas fa-heart font-awesome"></i> </a>
+            </div>
+            <% } %>
+        </div>
+    </main>
+
+    <script src="scriptView/scriptHeart.js"></script>
 </body>

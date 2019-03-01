@@ -65,29 +65,12 @@ router.post('/thread/newthread', isLoggedIn, (req, res, next) => {
   res.redirect('/')
 })
 
-router.get('/profiles?:username', isLoggedIn, (req, res, next) => {
-  console.log(req.params)
-  res.render('pages/profiles', { username: req.params })
-})
+
 
 //USER ROUTES
 
 //PROFIL
 router.get('/profile', isLoggedIn, function (req, res, next) {
-  // UserControl.getUserByID(req.session.passport.user)
-  //   .then((User) => {
-  //     ThreadControl.getAllThreadByIdUser(req.session.passport.user)
-  //       .then((Threads) => {
-  //         console.log(Threads)
-  //         ThreadControl.readThread(Threads.pathfile_thread)
-  //           .then((text_thread) => {
-  //             console.log(text_thread)
-
-  //             res.render('pages/profile', { User: User, text_thread: text_thread, Threads: Threads })
-  //           })
-  //       })
-  //   });
-
   const getUser = () => {
     return new Promise((resolve, reject) => {
       UserControl.getUserByID(req.session.passport.user)
@@ -138,10 +121,43 @@ router.get('/profile', isLoggedIn, function (req, res, next) {
             })
         })
     })
+})
 
+router.get('/profiles?:username', isLoggedIn, (req, res, next) => {
 
+  const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
 
+  async function asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index += 1) {
+      await callback(array[index], index, array);
+    }
+  }
 
+  const ReadPushText = async (array) => {
+    return new Promise(async (resolve, reject) => {
+      await asyncForEach(array, async (element) => {
+        //await waitFor(20)
+        ThreadControl.readThread(element.pathfile_thread)
+          .then((data) => {
+            element.text = data
+          })
+      })
+      await waitFor(20)
+      resolve(array)
+    })
+  }
+
+  UserControl.getUserByUsername(req.query.username)
+    .then((User) => {
+      ThreadControl.getAllThreadByIdUser(User.id_user)
+        .then((data) => {
+          ReadPushText(data)
+            .then((Threads) => {
+              console.log(Threads)
+              res.render('pages/profiles', {User : User, threads: Threads})
+            })
+        })
+    })
 })
 
 //SIGN UP
@@ -152,7 +168,7 @@ router.get('/signup', notLoggedIn, function (req, res, next) {
 });
 
 // When Sign Up is Submit if doesn't get an error
-router.post('/signup', passport.authenticate('local.signup', {  
+router.post('/signup', passport.authenticate('local.signup', {
   successRedirect: '/',
   failureRedirect: '/signup',
   failureFlash: true

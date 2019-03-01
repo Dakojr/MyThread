@@ -20,18 +20,15 @@
             <img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png" alt="Responsive image"
                 class="img-fluid rounded-circle">
             <small class="text-muted date-thread"><%= threads[i].date_thread %></small>
-            <a href="/profiles?<%- threads[i].username -%>">
+            <a href="/profiles?username=<%- threads[i].username -%>">
                 <h5>@<%= threads[i].username %></h5>
             </a>
-            <h4 class="text-center"><%= threads[i].thread_name %></h4>
-            <p class="wordwrap"><%= threads[i].text %></p>
+            <h4 class="text-center text-thread"><%= threads[i].thread_name %></h4>
+            <p class="wordwrap text-center"><%= threads[i].text %></p>
             <a href="#" class="bottom-heart"> <i id="icon" class="fas fa-heart font-awesome"></i> </a>
         </div>
 
         <% } %>
-        <div class="container" id="myForm">
-
-        </div>
 
 
         <div class="modal fade" id="newthread" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
@@ -48,14 +45,15 @@
                         <form action="/thread/newthread" method="POST">
                             <div class="form-group text-center">
                                 <strong for="title">Title</strong>
-                                <input type="text" class="form-control" name="title" id="title" placeholder="Enter a title">
+                                <input type="text" class="form-control" name="title" id="title"
+                                    placeholder="Enter a title">
                             </div>
                             <div class="form-group text-center">
                                 <label class="text-muted" for="thread_content">Tell me your thread</label>
-                                <textarea type="text" class="form-control" maxlength="255" rows="5" name="thread_content"
-                                    placeholder="maximum of 255 characters"></textarea>
+                                <textarea type="text" class="form-control" maxlength="255" rows="5"
+                                    name="thread_content" placeholder="maximum of 255 characters"></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary" style="float: right;">Thread</button>
+                            <button type="submit" class="btn btn-primary active" style="float: right;">Thread</button>
                             <input type="hidden" name="_csrf" value="<%= csurfToken %>">
                             <!-- Protect the page with a token -->
                         </form>

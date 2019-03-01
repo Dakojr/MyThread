@@ -18,5 +18,19 @@ module.exports = {
                     resolve(data)
                 })
         })
+    },
+
+    getUserByUsername: (username) => {
+        const dao = new AppDAOfs('./db/mythread.db')
+        const UserDAO = new UserDAOfs(dao)
+        return new Promise((resolve, reject) => {
+            UserDAO.getUserByUsername(username)
+                .then((data) => {
+                    dao.db.close(() => {
+                        console.log("BDD CLOSE !")
+                    })
+                    resolve(data)
+                })
+        })
     }
 }

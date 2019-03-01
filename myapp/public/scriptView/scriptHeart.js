@@ -3,6 +3,7 @@
     var open = false;
 
     icon.addEventListener('click', function () {
+        console.log("hehehehee")
         if (open) {
             icon.className = 'fas fa-heart'
         } else {
