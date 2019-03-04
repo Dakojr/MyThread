@@ -30,6 +30,30 @@ class ThreadDAO {
         })
     }
 
+    getThreadById(id_thread) {
+        var arr = []
+        return new Promise((resolve, reject) => {
+            this.dao.all("SELECT * FROM thread WHERE id_thread = '" + id_thread + "'")
+                .then((data) => {
+                    data.forEach(element => {
+                        const Thread = new ThreadClass()
+                        Thread.id_thread = element.id_thread
+                        Thread.thread_name = element.thread_name
+                        Thread.pathfile_thread = element.pathfile_thread
+                        Thread.date_thread = moment(element.date_thread).fromNow()
+                        Thread.type = element.type
+                        Thread.id_user = element.id_user
+                        Thread.text = null
+                        arr.push(Thread)
+                    });
+                })
+                .then(function () {
+                    resolve(arr)
+                })
+        })
+    }
+
+
     getAllThread() {
         var arr = []
         return new Promise((resolve, reject) => {

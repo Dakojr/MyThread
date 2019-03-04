@@ -65,7 +65,39 @@ router.post('/thread/newthread', isLoggedIn, (req, res, next) => {
   res.redirect('/')
 })
 
+router.get('/thread/edit', isLoggedIn, (req, res, next) => {
 
+  const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
+
+  async function asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index += 1) {
+      await callback(array[index], index, array);
+    }
+  }
+
+  const ReadPushText = async (array) => {
+    return new Promise(async (resolve, reject) => {
+      await asyncForEach(array, async (element) => {
+        //await waitFor(20)
+        ThreadControl.readThread(element.pathfile_thread)
+          .then((data) => {
+            element.text = data
+          })
+      })
+      await waitFor(20)
+      resolve(array)
+    })
+  }
+
+  ThreadControl.getThreadById(req.query.id_thread)
+    .then((data) => {
+      ReadPushText(data)
+        .then((Thread) => {
+          res.json(Thread);
+        })
+    })
+
+})
 
 //USER ROUTES
 
@@ -149,12 +181,14 @@ router.get('/profiles?:username', isLoggedIn, (req, res, next) => {
 
   UserControl.getUserByUsername(req.query.username)
     .then((User) => {
+      if (User.id_user === req.session.passport.user) {
+        res.redirect('/profile')
+      }
       ThreadControl.getAllThreadByIdUser(User.id_user)
         .then((data) => {
           ReadPushText(data)
             .then((Threads) => {
-              console.log(Threads)
-              res.render('pages/profiles', {User : User, threads: Threads})
+              res.render('pages/profiles', { User: User, threads: Threads })
             })
         })
     })

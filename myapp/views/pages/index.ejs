@@ -15,7 +15,8 @@
     </header>
 
     <main>
-        <% for(var i = 0; i < threads.length; i++) { %>
+    <% var x = 0 %>
+    <% for(var i = 0; i < threads.length; i++) { %>
         <div class="container rounded p-3 mb-5 bg-white rounded">
             <img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png" alt="Responsive image"
                 class="img-fluid rounded-circle">
@@ -25,11 +26,10 @@
             </a>
             <h4 class="text-center text-thread"><%= threads[i].thread_name %></h4>
             <p class="wordwrap text-center"><%= threads[i].text %></p>
-            <a href="#" class="bottom-heart"> <i id="icon" class="fas fa-heart font-awesome"></i> </a>
+            <a href="#" class="bottom-heart"> <i onclick="myHeart(icon<%- x -%>)" id="icon<%- x -%>" class="fas fa-heart font-awesome"></i> </a>
         </div>
-
+        <% x++ %>
         <% } %>
-
 
         <div class="modal fade" id="newthread" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
             aria-hidden="true">
@@ -78,3 +78,21 @@
 </body>
 
 </html>
+
+
+click pen
+
+ajax request
+access id thread
+access all thread
+put data in modal
+
+open modal
+
+
+change modal
+
+
+click submit
+
+close modal

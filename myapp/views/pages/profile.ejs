@@ -35,31 +35,37 @@
         <hr>
 
         <div class="row d-flex justify-content-around">
-
+        <% var x = 0 %>
+            
             <% for(var i = 0; i < threads.length; i++) { %>
             <div class="thread">
                 <img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png"
                     alt="Responsive image" class="img-thread rounded-circle">
-                <i class="fas fa-pen-alt edit" id="edit"></i>
+                <i class="fas fa-pen-alt edit" onclick="Thread(<%- threads[i].id_thread -%>)" id="edit<%- x -%>"></i>
                 <small class="text-muted date-thread"><%= threads[i].date_thread %></small>
                 <h6>@<%= User.username %></h6>
                 <h4 class="text-center thread-name"><%= threads[i].thread_name %></h4>
-                <p class="wordwrap"><%= threads[i].text %>
+                <p class="wordwrap text-center"><%= threads[i].text %>
                 </p>
-                <a href="#" class="bottom-heart"> <i id="icon" class="fas fa-heart font-awesome"></i> </a>
+                <a href="#" class="bottom-heart"> <i onclick="myHeart(icon<%- x -%>)" id="icon<%- x -%>" class="fas fa-heart font-awesome"></i></a>
             </div>
+            <% x++  %>
             <% } %>
-
-
         </div>
+
+
+
+        <div id="editmodal"></div>
+
     </main>
 
-    <script src="scriptView/scriptHeart.js"></script>
 
 
     <footer class="fixed-bottom">
         <% include ../partials/footer %>
     </footer>
+    <script src="scriptView/scriptHeart.js"></script>
+
 
 </body>
 
