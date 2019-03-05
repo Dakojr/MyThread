@@ -27,28 +27,7 @@ router.get('/', isLoggedIn, function (req, res, next) {
     })
   }
 
-  const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
-
-  async function asyncForEach(array, callback) {
-    for (let index = 0; index < array.length; index += 1) {
-      await callback(array[index], index, array);
-    }
-  }
-
-  const ReadPushText = async (array) => {
-    return new Promise(async (resolve, reject) => {
-      await asyncForEach(array, async (element) => {
-        //await waitFor(20)
-        ThreadControl.readThread(element.pathfile_thread)
-          .then((data) => {
-            element.text = data
-          })
-      })
-      await waitFor(20)
-      resolve(array)
-    })
-  }
-
+  
   start()
     .then((data) => {
       ReadPushText(data)
@@ -67,27 +46,6 @@ router.post('/thread/newthread', isLoggedIn, (req, res, next) => {
 
 router.get('/thread/edit', isLoggedIn, (req, res, next) => {
 
-  const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
-
-  async function asyncForEach(array, callback) {
-    for (let index = 0; index < array.length; index += 1) {
-      await callback(array[index], index, array);
-    }
-  }
-
-  const ReadPushText = async (array) => {
-    return new Promise(async (resolve, reject) => {
-      await asyncForEach(array, async (element) => {
-        //await waitFor(20)
-        ThreadControl.readThread(element.pathfile_thread)
-          .then((data) => {
-            element.text = data
-          })
-      })
-      await waitFor(20)
-      resolve(array)
-    })
-  }
 
   ThreadControl.getThreadById(req.query.id_thread)
     .then((data) => {
@@ -96,7 +54,26 @@ router.get('/thread/edit', isLoggedIn, (req, res, next) => {
           res.json(Thread);
         })
     })
+})
 
+router.post('/thread/edit', isLoggedIn, (req, res, next) => {
+  ThreadControl.getThreadById(req.body.id_thread)
+    .then((data) => {
+      ThreadControl.removeFile(data[0].pathfile_thread)
+      ThreadControl.newThreadFile(req.session.passport.user, req.body.title, req.body.thread_content)
+      ThreadControl.updateThread(req.body.id_thread, req.body.title, './thread/' + req.session.passport.user + '/' + req.body.title + '.html')
+      res.redirect('/')
+    })
+})
+
+router.get('/thread/random', isLoggedIn, (req, res, next) => {
+  ThreadControl.getRandomThread()
+    .then((data) => {
+      ReadPushText(data)
+        .then((Thread) => {
+          res.json(Thread)
+        })
+    })
 })
 
 //USER ROUTES
@@ -120,36 +97,14 @@ router.get('/profile', isLoggedIn, function (req, res, next) {
         })
     })
   }
-
-  const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
-
-  async function asyncForEach(array, callback) {
-    for (let index = 0; index < array.length; index += 1) {
-      await callback(array[index], index, array);
-    }
-  }
-
-  const ReadPushText = async (array) => {
-    return new Promise(async (resolve, reject) => {
-      await asyncForEach(array, async (element) => {
-        //await waitFor(20)
-        ThreadControl.readThread(element.pathfile_thread)
-          .then((data) => {
-            element.text = data
-          })
-      })
-      await waitFor(20)
-      resolve(array)
-    })
-  }
-
+  
   getUser()
     .then((User) => { // getall about the User
       start()
         .then((data) => { //threads without text
           ReadPushText(data)
             .then((Threads) => { //Threads with Text
-              res.render('pages/profile', { message: "message", User: User, threads: Threads })
+              res.render('pages/profile', { message: "message", User: User, threads: Threads, csurfToken: req.csrfToken() })
             })
         })
     })
@@ -158,26 +113,6 @@ router.get('/profile', isLoggedIn, function (req, res, next) {
 router.get('/profiles?:username', isLoggedIn, (req, res, next) => {
 
   const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
-
-  async function asyncForEach(array, callback) {
-    for (let index = 0; index < array.length; index += 1) {
-      await callback(array[index], index, array);
-    }
-  }
-
-  const ReadPushText = async (array) => {
-    return new Promise(async (resolve, reject) => {
-      await asyncForEach(array, async (element) => {
-        //await waitFor(20)
-        ThreadControl.readThread(element.pathfile_thread)
-          .then((data) => {
-            element.text = data
-          })
-      })
-      await waitFor(20)
-      resolve(array)
-    })
-  }
 
   UserControl.getUserByUsername(req.query.username)
     .then((User) => {
@@ -279,4 +214,26 @@ function consumeRememberMeToken(token, fn) {
   // invalidate the single-use token
   delete tokens[token];
   return fn(null, uid);
+}
+
+const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
+
+async function asyncForEach(array, callback) {
+  for (let index = 0; index < array.length; index += 1) {
+    await callback(array[index], index, array);
+  }
+}
+
+const ReadPushText = async (array) => {
+  return new Promise(async (resolve, reject) => {
+    await asyncForEach(array, async (element) => {
+      //await waitFor(20)
+      ThreadControl.readThread(element.pathfile_thread)
+        .then((data) => {
+          element.text = data
+        })
+    })
+    await waitFor(20)
+    resolve(array)
+  })
 }

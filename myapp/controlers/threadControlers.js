@@ -1,10 +1,23 @@
 const Promise = require('bluebird')
 var fs = require('fs')
-
 const ThreadDAOfs = require('./../models/threadDAO')
 const AppDAOfs = require('./../models/AppDAO')
 
 module.exports = {
+
+    getRandomThread: () => {
+        const dao = new AppDAOfs('./db/mythread.db')
+        const ThreadDAO = new ThreadDAOfs(dao)
+        return new Promise((resolve, reject) => {
+            ThreadDAO.getRandomThread()
+                .then((data) => {
+                    dao.db.close(() => {
+                        console.log("BDD CLOSE !")
+                    })
+                    resolve(data)
+                })
+        })
+    },
 
     getAllThreadByIdUser: (id_user) => {
         const dao = new AppDAOfs('./db/mythread.db')
@@ -45,6 +58,30 @@ module.exports = {
                     })
                     resolve(data)
                 })
+        })
+    },
+
+    updateThread: (id_thread, title, pathfile) => {
+        const dao = new AppDAOfs('./db/mythread.db')
+        const ThreadDAO = new ThreadDAOfs(dao)
+        return new Promise((resolve, reject) => {
+            ThreadDAO.updateThread(id_thread, title, pathfile)
+                .then(() => {
+                    dao.db.close(() => {
+                        console.log("BDD CLOSEEEEEEEEEEEEEEEEEEEEE !")
+                    })
+                    resolve("VOILA C UPDATE MAIS VA VERIFIER")
+                })
+        })
+    },
+
+    removeFile: (oldpathfile) => {
+        fs.unlink(oldpathfile, (err) => {
+            if (err) {
+                throw err
+            } else {
+                console.log("File is Removed")
+            }
         })
     },
 

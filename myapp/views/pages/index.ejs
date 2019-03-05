@@ -15,7 +15,7 @@
     </header>
 
     <main>
-    <% var x = 0 %>
+    <% var x = 1 %>
     <% for(var i = 0; i < threads.length; i++) { %>
         <div class="container rounded p-3 mb-5 bg-white rounded">
             <img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png" alt="Responsive image"
@@ -64,6 +64,12 @@
             </div>
         </div>
 
+        <div id="editmodal"></div>
+
+
+
+
+        
     </main>
 
     </div>
@@ -80,19 +86,31 @@
 </html>
 
 
-click pen
-
-ajax request
-access id thread
-access all thread
-put data in modal
-
-open modal
 
 
-change modal
 
 
-click submit
 
-close modal
+
+
+
+
+
+
+Remove "Thread button" in modal
+
+
+Responsive Design page profile
+
+Voir pour les notifs
+
+Follower / Following
+
+Like Button
+
+
+
+// RANDOM THREAD SQL 
+SELECT *
+FROM `thread`
+ORDER BY random() limit 1
