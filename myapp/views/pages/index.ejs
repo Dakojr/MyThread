@@ -15,18 +15,24 @@
     </header>
 
     <main>
+    <% if(hashtag !== undefined) { %>
+    <h5 class="text-center"> <%= hashtag %></h5>
+    <% } %>
     <% var x = 1 %>
     <% for(var i = 0; i < threads.length; i++) { %>
-        <div class="container rounded p-3 mb-5 bg-white rounded">
+        <div class="container rounded p-3 mb-5 bg-white rounded" ondblclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)">
             <img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png" alt="Responsive image"
                 class="img-fluid rounded-circle">
             <small class="text-muted date-thread"><%= threads[i].date_thread %></small>
-            <a href="/profiles?username=<%- threads[i].username -%>">
-                <h5>@<%= threads[i].username %></h5>
-            </a>
+            <a href="/profiles?username=<%- threads[i].username -%>"><h5>@<%= threads[i].username %></h5></a><i class="fas fa-user-friends" style="margin-left: 1em;"></i>
             <h4 class="text-center text-thread"><%= threads[i].thread_name %></h4>
             <p class="wordwrap text-center"><%= threads[i].text %></p>
-            <a href="#" class="bottom-heart"> <i onclick="myHeart(icon<%- x -%>)" id="icon<%- x -%>" class="fas fa-heart font-awesome"></i> </a>
+            <a href="/thread?hashtag=<%- escape(threads[i].hashtag) -%>" class="bottom-hashtag"><%= threads[i].hashtag %></a>
+            <% if (threads[i].liked === false) { %>
+            <a href="#" class="bottom-heart"> <i onclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)" id="icon<%- x -%>" class="fas fa-heart font-awesome"></i> </a>
+            <% } else {%>
+            <a href="#" class="bottom-heart"> <i onclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)" id="icon<%- x -%>" class="fas fa-heart font-awesome open"></i></a>
+            <% } %>
         </div>
         <% x++ %>
         <% } %>
@@ -52,8 +58,11 @@
                                 <label class="text-muted" for="thread_content">Tell me your thread</label>
                                 <textarea type="text" class="form-control" maxlength="255" rows="5"
                                     name="thread_content" placeholder="maximum of 255 characters"></textarea>
+                                <label class="text-muted" for="hashtag">Hashtag</label>
+                                <input type="text" class="form-control" name="hashtag" id="hashtag"
+                                    placeholder="Enter a hashtag" value="#">
                             </div>
-                            <button type="submit" class="btn btn-primary active" style="float: right;">Thread</button>
+                            <button type="submit" class="btn btn-primary" style="float: right;">Thread</button>
                             <input type="hidden" name="_csrf" value="<%= csurfToken %>">
                             <!-- Protect the page with a token -->
                         </form>
@@ -85,21 +94,6 @@
 
 </html>
 
-
-
-
-
-
-
-
-
-
-
-
-
-Remove "Thread button" in modal
-
-
 Responsive Design page profile
 
 Voir pour les notifs
@@ -107,10 +101,3 @@ Voir pour les notifs
 Follower / Following
 
 Like Button
-
-
-
-// RANDOM THREAD SQL 
-SELECT *
-FROM `thread`
-ORDER BY random() limit 1

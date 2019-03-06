@@ -40,6 +40,7 @@ app.use(passport.authenticate('remember-me'));
 app.use((req, res, next) => {
   res.locals.login = req.isAuthenticated();
   res.locals.session = req.session;
+  res.locals.hashtag = null;
   next();
 });
 

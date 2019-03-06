@@ -39,17 +39,24 @@
             <% var x = 1 %>
 
             <% for(var i = 0; i < threads.length; i++) { %>
-            <div class="thread">
+            <div class="thread" ondblclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)">
                 <img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png"
                     alt="Responsive image" class="img-thread rounded-circle">
-                <i class="fas fa-pen-alt edit" onclick="Thread(<%- threads[i].id_thread -%>)" id="edit<%- x -%>"></i>
+                <i class="fas fa-pen-alt edit" onclick="EditThread(<%- threads[i].id_thread -%>)"
+                    id="edit<%- x -%>"></i>
+                <i class="fas fa-trash edit" onclick="RemoveThread(<%- threads[i].id_thread -%>)"></i>
                 <small class="text-muted date-thread"><%= threads[i].date_thread %></small>
                 <h6>@<%= User.username %></h6>
                 <h4 class="text-center thread-name"><%= threads[i].thread_name %></h4>
-                <p class="wordwrap text-center"><%= threads[i].text %>
-                </p>
-                <a href="#" class="bottom-heart"> <i onclick="myHeart(icon<%- x -%>)" id="icon<%- x -%>"
-                        class="fas fa-heart font-awesome"></i></a>
+                <p class="wordwrap text-center"><%= threads[i].text %></p>
+                <a href="#" class="bottom-hashtag"><%= threads[i].hashtag %></a>
+                <% if (threads[i].liked === false) { %>
+                <a href="#" class="bottom-heart"> <i onclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)"
+                        id="icon<%- x -%>" class="fas fa-heart font-awesome"></i> </a>
+                <% } else {%>
+                <a href="#" class="bottom-heart"> <i onclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)"
+                        id="icon<%- x -%>" class="fas fa-heart font-awesome open"></i></a>
+                <% } %>
             </div>
             <% x++  %>
             <% } %>
@@ -76,6 +83,9 @@
                                 <label class="text-muted" for="thread_content">Tell me your thread</label>
                                 <textarea type="text" class="form-control" maxlength="255" rows="5"
                                     name="thread_content" placeholder="maximum of 255 characters"></textarea>
+                                    <label class="text-muted" for="hashtag">Hashtag</label>
+                                <input type="text" class="form-control" name="hashtag" id="hashtag"
+                                    placeholder="Enter a hashtag" value="#">
                             </div>
                             <button type="submit" class="btn btn-primary active" style="float: right;">Thread</button>
                             <input type="hidden" name="_csrf" value="<%= csurfToken %>">

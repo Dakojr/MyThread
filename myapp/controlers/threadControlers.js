@@ -5,11 +5,11 @@ const AppDAOfs = require('./../models/AppDAO')
 
 module.exports = {
 
-    getRandomThread: () => {
+    getRandomThread: (id_user) => {
         const dao = new AppDAOfs('./db/mythread.db')
         const ThreadDAO = new ThreadDAOfs(dao)
         return new Promise((resolve, reject) => {
-            ThreadDAO.getRandomThread()
+            ThreadDAO.getRandomThread(id_user)
                 .then((data) => {
                     dao.db.close(() => {
                         console.log("BDD CLOSE !")
@@ -19,11 +19,11 @@ module.exports = {
         })
     },
 
-    getAllThreadByIdUser: (id_user) => {
+    getAllThreadByIdUser: (id_user, id_userIsLog) => {
         const dao = new AppDAOfs('./db/mythread.db')
         const ThreadDAO = new ThreadDAOfs(dao)
         return new Promise((resolve, reject) => {
-            ThreadDAO.getThreadByIdUser(id_user)
+            ThreadDAO.getThreadByIdUser(id_user, id_userIsLog)
                 .then((data) => {
                     dao.db.close(() => {
                         console.log("BDD CLOSE !")
@@ -33,11 +33,26 @@ module.exports = {
         })
     },
 
-    getAllThread: () => {
+    getThreadLiked: (id_thread, id_user) => {
         const dao = new AppDAOfs('./db/mythread.db')
         const ThreadDAO = new ThreadDAOfs(dao)
         return new Promise((resolve, reject) => {
-            ThreadDAO.getAllThread()
+            ThreadDAO.getThreadLiked(id_thread, id_user)
+                .then((data) => {
+                    dao.db.close(() => {
+                        console.log("BDD CLOSE !")
+                    })
+                    resolve(data)
+                })
+        })
+    },
+
+
+    getAllThread: (id_user) => {
+        const dao = new AppDAOfs('./db/mythread.db')
+        const ThreadDAO = new ThreadDAOfs(dao)
+        return new Promise((resolve, reject) => {
+            ThreadDAO.getAllThread(id_user)
                 .then((data) => {
                     dao.db.close(() => {
                         console.log("BDD CLOSE !")
@@ -60,12 +75,39 @@ module.exports = {
                 })
         })
     },
-
-    updateThread: (id_thread, title, pathfile) => {
+    getThreadByHashtag: (hashtag, id_userIsLog) => {
         const dao = new AppDAOfs('./db/mythread.db')
         const ThreadDAO = new ThreadDAOfs(dao)
         return new Promise((resolve, reject) => {
-            ThreadDAO.updateThread(id_thread, title, pathfile)
+            ThreadDAO.getThreadByHashtag(hashtag, id_userIsLog)
+                .then((data) => {
+                    dao.db.close(() => {
+                        console.log("BDD CLOSE !")
+                    })
+                    resolve(data)
+                })
+        })
+    },
+
+    removeThread: (id_thread) => {
+        const dao = new AppDAOfs('./db/mythread.db')
+        const ThreadDAO = new ThreadDAOfs(dao)
+        return new Promise((resolve, reject) => {
+            ThreadDAO.removeThread(id_thread)
+                .then(() => {
+                    dao.db.close(() => {
+                        console.log("BDD CLOSE !")
+                    })
+                    resolve("VOILA C REMOVE MAIS VA VEIRIFER")
+                })
+        })
+    },
+
+    updateThread: (id_thread, title, pathfile, hashtag) => {
+        const dao = new AppDAOfs('./db/mythread.db')
+        const ThreadDAO = new ThreadDAOfs(dao)
+        return new Promise((resolve, reject) => {
+            ThreadDAO.updateThread(id_thread, title, pathfile, hashtag)
                 .then(() => {
                     dao.db.close(() => {
                         console.log("BDD CLOSEEEEEEEEEEEEEEEEEEEEE !")
@@ -128,11 +170,11 @@ module.exports = {
         })
     },
 
-    newThread: (thread_name, pathfile_thread, TYPE, id_user) => {
+    newThread: (thread_name, pathfile_thread, TYPE, id_user, hashtag) => {
         const dao = new AppDAOfs('./db/mythread.db')
         const ThreadDAO = new ThreadDAOfs(dao)
         return new Promise((resolve, reject) => {
-            ThreadDAO.newThread(thread_name, pathfile_thread, TYPE, id_user)
+            ThreadDAO.newThread(thread_name, pathfile_thread, TYPE, id_user, hashtag)
                 .then(() => {
                     console.log('PROMISE IS DONE')
                     dao.db.close(() => {

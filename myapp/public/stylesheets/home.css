@@ -38,6 +38,13 @@ main {
     word-wrap: break-word;      /* IE */ 
  }
 
+.bottom-hashtag {
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 1em;
+    float: left;
+}
+
 .bottom-heart {
     position: absolute;
     bottom: 0;
@@ -45,17 +52,17 @@ main {
     left: 50%;
 }
 
-.fa-heart:hover {
+.fa-heart:hover, .fa-user-friends:hover {
     color: #FA7268;
 }
 
-.fa-heart{
+.fa-heart, .fa-user-friends{
     color: #aaa;
     transform: rotate(0deg);
     transition: transform 0.5s linear;
 }
   
-.fa-heart.open{
+.fa-heart.open, fa-user-friends.open{
     color: #FA7268;
     transform: rotate(360deg);
     transition: transform 0.5s linear;

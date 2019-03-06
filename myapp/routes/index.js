@@ -12,6 +12,7 @@ router.use(csurfProtect); //Every routes by him is Protect by Csrf protection
 const utils = require('./../config/utils') //generation Token
 const UserControl = require('./../controlers/usercontroler')
 const ThreadControl = require('./../controlers/threadControlers')
+const LikeControl = require('./../controlers/likeControler')
 
 
 // HOME PAGE
@@ -20,14 +21,14 @@ router.get('/', isLoggedIn, function (req, res, next) {
 
   const start = () => {
     return new Promise((resolve, reject) => {
-      ThreadControl.getAllThread()
+      ThreadControl.getAllThread(req.session.passport.user)
         .then((data) => {
           resolve(data)
         })
     })
   }
 
-  
+
   start()
     .then((data) => {
       ReadPushText(data)
@@ -38,15 +39,32 @@ router.get('/', isLoggedIn, function (req, res, next) {
 
 })
 
+router.get('/thread?:hashtag', isLoggedIn, (req, res, next) => {
+  console.log(req.query.hashtag)
+
+  ThreadControl.getThreadByHashtag(req.query.hashtag, req.session.passport.user)
+    .then((data) => {
+      ReadPushText(data)
+        .then((Threads) => {
+          res.render('pages/index', { message: "message", threads: Threads, csurfToken: req.csrfToken(), hashtag: req.query.hashtag })
+        })
+    })
+})
+
+
 router.post('/thread/newthread', isLoggedIn, (req, res, next) => {
   ThreadControl.newThreadFile(req.session.passport.user, req.body.title, req.body.thread_content)
-  ThreadControl.newThread(req.body.title, './thread/' + req.session.passport.user + '/' + req.body.title + '.html', "N", req.session.passport.user)
+  ThreadControl.newThread(req.body.title, './thread/' + req.session.passport.user + '/' + req.body.title + '.html', "N", req.session.passport.user, req.body.hashtag)
   res.redirect('/')
 })
 
+router.get('/thread/delete?:id_thread', isLoggedIn, (req, res, next) => {
+  ThreadControl.removeThread(req.query.id_thread)
+  res.redirect('/profile')
+})
+
+
 router.get('/thread/edit', isLoggedIn, (req, res, next) => {
-
-
   ThreadControl.getThreadById(req.query.id_thread)
     .then((data) => {
       ReadPushText(data)
@@ -67,7 +85,7 @@ router.post('/thread/edit', isLoggedIn, (req, res, next) => {
 })
 
 router.get('/thread/random', isLoggedIn, (req, res, next) => {
-  ThreadControl.getRandomThread()
+  ThreadControl.getRandomThread(req.session.passport.user)
     .then((data) => {
       ReadPushText(data)
         .then((Thread) => {
@@ -75,6 +93,26 @@ router.get('/thread/random', isLoggedIn, (req, res, next) => {
         })
     })
 })
+
+// LIKE BUTTON
+
+router.get('/like', isLoggedIn, (req, res, next) => {
+  var bool;
+  LikeControl.getLike(req.query.id_thread, req.session.passport.user)
+    .then((data) => {
+      if (data === false) {
+        LikeControl.LikeButton(req.query.id_thread, req.session.passport.user)
+        bool = true
+        res.json(bool)
+      } else {
+        LikeControl.disLikeButton(req.query.id_thread, req.session.passport.user)
+        bool = false
+        res.json(bool)
+      }
+    })
+})
+
+
 
 //USER ROUTES
 
@@ -91,13 +129,13 @@ router.get('/profile', isLoggedIn, function (req, res, next) {
 
   const start = () => {
     return new Promise((resolve, reject) => {
-      ThreadControl.getAllThreadByIdUser(req.session.passport.user)
+      ThreadControl.getAllThreadByIdUser(req.session.passport.user, req.session.passport.user)
         .then((data) => {
           resolve(data)
         })
     })
   }
-  
+
   getUser()
     .then((User) => { // getall about the User
       start()
@@ -119,11 +157,11 @@ router.get('/profiles?:username', isLoggedIn, (req, res, next) => {
       if (User.id_user === req.session.passport.user) {
         res.redirect('/profile')
       }
-      ThreadControl.getAllThreadByIdUser(User.id_user)
+      ThreadControl.getAllThreadByIdUser(User.id_user, req.session.passport.user)
         .then((data) => {
           ReadPushText(data)
             .then((Threads) => {
-              res.render('pages/profiles', { User: User, threads: Threads })
+              res.render('pages/profiles', { User: User, threads: Threads, csurfToken: req.csrfToken() })
             })
         })
     })

@@ -91,6 +91,14 @@ h6 {
   word-wrap: break-word;      /* IE */ 
 }
 
+.bottom-hashtag {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 1em;
+  margin-left: 1em;
+  float: left;
+}
+
 /* HEART BUTTON */
 
 .bottom-heart {

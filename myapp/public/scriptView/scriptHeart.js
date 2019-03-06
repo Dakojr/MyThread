@@ -1,10 +1,29 @@
 function myHeart(id) {
   if (id.className === "fas fa-heart font-awesome") {
     id.classList.add('open')
+
   } else {
     id.classList.remove('open')
   }
 }
+
+function Like(id, id_thread) {
+  $.get("/like",
+    {
+      id_thread: id_thread
+    },
+    function (data, status) {
+      if (data === false) {
+        id.classList.remove('open')
+
+      } else {
+        id.classList.add('open')
+      }
+    })
+}
+
+
+// CLOSE MODAL
 
 function RemoveChild() {
   var element = document.getElementById("editmodal");
@@ -13,7 +32,38 @@ function RemoveChild() {
   }
 }
 
-function Thread(id_thread) {
+
+// REMOVE THREAD
+
+function RemoveThread(id_thread) {
+
+  var htmlmodal = `<div class="modal fade" id="updatethread" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+
+                <div class="modal-header d-flex justify-content-center">
+                        <h4 class="text-center">Are you sur you want to delete this Thread ?</h4>
+                        <i class="far fa-times-circle fa-lg ml-auto p-2" onClick= "RemoveChild()" data-dismiss="modal"
+                            style="color: #FA7268; float: right;" onmouseover="this.style.color='#3F82C7';"
+                            onmouseout="this.style.color='#FA7268';"></i>
+                    </div>
+                    <div class="modal-body d-flex justify-content-center">
+                        <a href="/thread/delete?id_thread=` + id_thread + `"><i class="fas fa-trash" style="color: #FA7268; float: right;" onmouseover="this.style.color='#3F82C7';"
+                        onmouseout="this.style.color='#FA7268';"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>`
+
+  $('#editmodal').append(htmlmodal);
+  $('#updatethread').modal('show');
+}
+
+
+//EDIT A THREAD
+
+function EditThread(id_thread) {
   $.get("/thread/edit",
     {
       id_thread: id_thread
@@ -62,6 +112,8 @@ function Thread(id_thread) {
     });
 }
 
+//RANDOM THREAD
+
 function NewRandom() {
 
   const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
@@ -82,7 +134,7 @@ function randomThread() {
       var htmlmodal = `<div class="modal fade" id="updatethread" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
             aria-hidden="true" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog modal-dialog-centered" role="document">                
-                <div class="modal-content">
+                <div class="modal-content" ondblclick="myHeart(icon0)">
                 <div class="modal-header no-border">
                 <img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png" alt="Responsive image"
                 class="img-fluid rounded-circle" width="70px" height="70px">
@@ -92,15 +144,20 @@ function randomThread() {
                 <h5 class="text-center" style="margin-top: 2em; margin-left: 2em;">`+ data[0].thread_name + `</h5>     
                 <i class="far fa-times-circle fa-lg ml-auto p-2" onClick= "RemoveChild()" data-dismiss="modal"
                 style="color: #FA7268; float: right;" onmouseover="this.style.color='#3F82C7';"
-                onmouseout="this.style.color='#FA7268';"></i>           
+                onmouseout="this.style.color='#FA7268';"></i>
                 </div>
                 <div class="modal-body">
-                
-                  <p>`+ data[0].text + `</p>
+                <p>`+ data[0].text + `</p>
                 </div>
-                <div class="modal-footer no-border" >
-                <a href="#" class="bottom-heart"> <i onclick="myHeart(icon0)" id="icon0" class="fas fa-heart font-awesome" ></i> </a>
-                <i onclick="NewRandom()" data-dismiss="modal" class="fas fa-dice fa-lg" style="color: #FA7268;"
+                <div class="modal-footer no-border" >`
+                  if (data[0].liked === false) {
+                    console.log(data) 
+                    htmlmodal += '<a href="#" class="bottom-heart"> <i onclick="Like(icon0, <%- threads[i].id_thread -%>)" id="icon0" class="fas fa-heart font-awesome"></i> </a>'
+                  } else {
+                    htmlmodal += '<a href="#" class="bottom-heart"> <i onclick="Like(icon0, <%- threads[i].id_thread -%>)" id="icon0" class="fas fa-heart font-awesome open"></i></a>'
+                  } 
+                  
+                htmlmodal += `<i onclick="NewRandom()" data-dismiss="modal" class="fas fa-dice fa-lg" style="color: #FA7268;"
                         onmouseover="this.style.color='#3F82C7';" onmouseout="this.style.color='#FA7268';"></i>
                 </div>
               </div>

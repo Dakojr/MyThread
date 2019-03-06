@@ -33,21 +33,68 @@
         <hr>
 
         <div class="row d-flex justify-content-around">
-
+            <% var x = 1 %>
             <% for(var i = 0; i < threads.length; i++) { %>
-            <div class="thread">
+            <div class="thread" ondblclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)">
                 <img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png"
                     alt="Responsive image" class="img-thread rounded-circle">
                 <small class="text-muted date-thread"><%= threads[i].date_thread %></small>
                 <h6>@<%= User.username %></h6>
                 <h4 class="text-center thread-name"><%= threads[i].thread_name %></h4>
-                <p class="wordwrap"><%= threads[i].text %>
-                </p>
-                <a href="#" class="bottom-heart"> <i id="icon" class="fas fa-heart font-awesome"></i> </a>
+                <p class="wordwrap"><%= threads[i].text %></p>
+                <a href="#" class="bottom-hashtag"><%= threads[i].hashtag %></a>
+                <% if (threads[i].liked === false) { %>
+                <a href="#" class="bottom-heart"> <i onclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)"
+                        id="icon<%- x -%>" class="fas fa-heart font-awesome"></i> </a>
+                <% } else {%>
+                <a href="#" class="bottom-heart"> <i onclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)"
+                        id="icon<%- x -%>" class="fas fa-heart font-awesome open"></i></a>
+                <% } %>
             </div>
+            <% x++ %>
             <% } %>
         </div>
     </main>
+
+
+    <div class="modal fade" id="newthread" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-center">
+                    <h4 class="">New Thread</h4>
+                    <i class="far fa-times-circle fa-lg ml-auto p-2" data-dismiss="modal"
+                        style="color: #FA7268; float: right;" onmouseover="this.style.color='#3F82C7';"
+                        onmouseout="this.style.color='#FA7268';"></i>
+                </div>
+                <div class="modal-body">
+                    <form action="/thread/newthread" method="POST">
+                        <div class="form-group text-center">
+                            <strong for="title">Title</strong>
+                            <input type="text" class="form-control" name="title" id="title" placeholder="Enter a title">
+                        </div>
+                        <div class="form-group text-center">
+                            <label class="text-muted" for="thread_content">Tell me your thread</label>
+                            <textarea type="text" class="form-control" maxlength="255" rows="5" name="thread_content"
+                                placeholder="maximum of 255 characters"></textarea>
+                                <label class="text-muted" for="hashtag">Hashtag</label>
+                                <input type="text" class="form-control" name="hashtag" id="hashtag"
+                                    placeholder="Enter a hashtag", value="#">
+                        </div>
+                        <button type="submit" class="btn btn-primary active" style="float: right;">Thread</button>
+                        <input type="hidden" name="_csrf" value="<%= csurfToken %>">
+                        <!-- Protect the page with a token -->
+                    </form>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="fixed-bottom">
+        <% include ../partials/footer %>
+    </footer>
 
     <script src="scriptView/scriptHeart.js"></script>
 </body>
