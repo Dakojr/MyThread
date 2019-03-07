@@ -1,0 +1,23 @@
+Main
+new sqlite3.Database(filename, [mode], [callback])
+Returns a new Database object and automatically opens the database. There is no separate method to open the database.
+filename: Valid values are filenames, ":memory:" for an anonymous in-memory database and an empty string for an anonymous disk-based database. Anonymous databases are not persisted and when closing the database handle, their contents are lost.
+mode (optional): One or more of sqlite3.OPEN_READONLY, sqlite3.OPEN_READWRITE and sqlite3.OPEN_CREATE. The default value is OPEN_READWRITE | OPEN_CREATE.
+callback (optional): If provided, this function will be called when the database was opened successfully or when an error occurred. 
+The first argument is an error object. When it is null, opening succeeded. 
+If no callback is provided and an error occurred, an error event with the error object as the only parameter will be emitted on the database object. 
+If opening succeeded, an open event with no parameters is emitted, regardless of whether a callback was provided or not.
+
+Principal
+
+"new sqlite3.Database(filename, [mode], [callback])"
+
+Retourne un nouvelle Objet de base de donnée et ouvre celle-ci automatiquement. Il n'éxiste pas d'autre méthode pour l'ouverture de la base de donnée.
+
+nom du fichier : "nom de fichier valide", ":memory:" pour une base de donnée anonyme en mémoire et une chaine de caractères vide pour une base de donnée anonyme basé sur le disque. 
+Une base de donnée anonyme n'est pas persistant et quand on la ferme tout le contenue est perdu.
+mode (optionnel) : Une ou plus (d'option ) comme sqlite3.OPEN_READONLY, sqlite3.OPEN_READWRITE et sqlite3.OPEN_CREATE. La valeur par défaut est OPEN_READWRITE | OPEN_CREATE.
+(callback) Rapelle (optionnel) : si il ya une condition, cette fonction vas être appeler seulement si la base de donnée a bien été ouverte ou qu'une erreur a été trouver.
+Le Premier argument est un objet d'erreur. si il est nul alors la base de donnée a été ouverte avec succès.
+Si il n y a pas de rapelle (callback) et que le code conteint une erreur alors , un evenement sera passer en paramètre comme objet d'erreur et ce sera le seul parametre émis à la base de donnée.
+Si la base de donné s'est ouverte avec succès, un évenement d'ouverture sans paramètres est emit, sans regarder  si un appel a été fourni  ou pas.

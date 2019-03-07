@@ -24,3 +24,28 @@
 .no-border{
   border:none;
 }
+
+.follow, .follow:hover {
+  background: none;
+  color: #3F82C7;
+  border: none;
+  box-shadow: none;
+}
+
+.follow:hover {
+  color: #FF8C84;
+  box-shadow: none;
+}
+
+.follow.active.focus,
+.follow.active:focus,
+.follow.focus,
+.follow.focus:active,
+.follow:active:focus,
+.follow:focus {
+  outline: 0 !important;
+  outline-offset: 0  !important;
+  background-image: none  !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none  !important;
+}

@@ -43,7 +43,6 @@ class LikeDAO {
                     resolve(arr)
                 })
         })
-
     }
 }
 

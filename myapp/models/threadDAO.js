@@ -88,7 +88,7 @@ class ThreadDAO {
                         Thread.id_user = element.id_user
                         Thread.hashtag = element.hashtag
                         Thread.text = null
-                        
+
                         arr.push(Thread)
                     });
                 })
@@ -131,7 +131,7 @@ class ThreadDAO {
         })
     }
 
-    
+
 
     getAllThread(id_user) {
         var arr = []
@@ -155,6 +155,14 @@ class ThreadDAO {
                                     Thread.liked = false
                                 } else {
                                     Thread.liked = true
+                                }
+                            })
+                        this.dao.get("SELECT id_user, id_user_connect FROM follower WHERE id_user = '" + Thread.id_user + "'  AND id_user_connect = '" + id_user + "'")
+                            .then((data) => {
+                                if (data === undefined) {
+                                    Thread.follow_user = false
+                                } else {
+                                    Thread.follow_user = true
                                 }
                             })
                         arr.push(Thread)
@@ -183,7 +191,7 @@ class ThreadDAO {
                     pathfile_thread = ?,
                     hashtag = ?
                 WHERE id_thread = ?`,
-                [title, pathfile, id_thread, hashtag])
+                [title, pathfile, hashtag, id_thread])
         })
     }
 

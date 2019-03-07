@@ -14,6 +14,9 @@
         <% include ../partials/header %>
     </header>
 
+
+
+
     <main>
     <% if(hashtag !== undefined) { %>
     <h5 class="text-center"> <%= hashtag %></h5>
@@ -24,12 +27,17 @@
             <img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png" alt="Responsive image"
                 class="img-fluid rounded-circle">
             <small class="text-muted date-thread"><%= threads[i].date_thread %></small>
-            <a href="/profiles?username=<%- threads[i].username -%>"><h5>@<%= threads[i].username %></h5></a><i class="fas fa-user-friends" style="margin-left: 1em;"></i>
+            <a href="/profiles?username=<%- threads[i].username -%>"><h5>@<%= threads[i].username %></h5></a>
+            <% if(threads[i].id_user !== user_connect && threads[i].follow_user === false) { %>
+            <button type="button" class="btn-sm follow" onclick="Follow(followButton<%- x -%> ,<%- threads[i].id_user -%>)" id="followButton<%- x -%>">Follow</button>
+            <% } else if (threads[i].id_user !== user_connect && threads[i].follow_user === true) { %>
+            <button type="button" class="btn-sm follow" onclick="Follow(followButton<%- x -%> ,<%- threads[i].id_user -%>)" id="followButton<%- x -%>">Unfollow</button>
+            <% } %>
             <h4 class="text-center text-thread"><%= threads[i].thread_name %></h4>
             <p class="wordwrap text-center"><%= threads[i].text %></p>
             <a href="/thread?hashtag=<%- escape(threads[i].hashtag) -%>" class="bottom-hashtag"><%= threads[i].hashtag %></a>
             <% if (threads[i].liked === false) { %>
-            <a href="#" class="bottom-heart"> <i onclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)" id="icon<%- x -%>" class="fas fa-heart font-awesome"></i> </a>
+            <a href="#" class="bottom-heart"> <i onclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)" id="icon<%- x -%>" class="fas fa-heart font-awesome"></i></a>
             <% } else {%>
             <a href="#" class="bottom-heart"> <i onclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)" id="icon<%- x -%>" class="fas fa-heart font-awesome open"></i></a>
             <% } %>
@@ -74,21 +82,17 @@
         </div>
 
         <div id="editmodal"></div>
-
-
-
-
         
     </main>
 
     </div>
 
-    <script src="scriptView/scriptHeart.js"></script>
-
     <footer class="fixed-bottom">
         <% include ../partials/footer %>
     </footer>
-
+    
+    <script src="scriptView/scriptHeart.js"></script>
+    <script src="scriptView/scriptFollow.js"></script>
 
 </body>
 
@@ -100,4 +104,4 @@ Voir pour les notifs
 
 Follower / Following
 
-Like Button
+counter like button

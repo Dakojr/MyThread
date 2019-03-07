@@ -25,7 +25,7 @@ class UserDAO {
         })
     }
 
-    getUserByUsername(username) {
+    getUserByUsername(username, id_user_connect) {
         const User = new UserClass()
         return new Promise((resolve, reject) => {
             this.dao.all("SELECT id_user, username, email, telephone, date_user FROM user WHERE username = '" + username + "'")
@@ -36,10 +36,18 @@ class UserDAO {
                         User.email = element.email
                         User.telephone = element.telephone
                         User.date_user = element.date_user
+                        this.dao.get("SELECT id_user, id_user_connect FROM follower WHERE id_user = '" + User.id_user + "'  AND id_user_connect = '" + id_user_connect + "'")
+                            .then((data) => {
+                                console.log
+                                if (data === undefined) {
+                                    User.follow_user = false
+                                    resolve(User)
+                                } else {
+                                    User.follow_user = true
+                                    resolve(User)
+                                }
+                            })
                     });
-                })
-                .then(function () {
-                    resolve(User)
                 })
         })
     }

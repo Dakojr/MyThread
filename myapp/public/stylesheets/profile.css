@@ -2,6 +2,10 @@ main {
   margin-top : 3%;
 }
 
+a {
+  color : #3F82C7;
+}
+
 /* HEAD FROM HEAD */
 
 .container {
@@ -64,6 +68,7 @@ h6 {
   color: #aaa;
   transform: rotate(0deg);
   transition: transform 0.5s linear;
+  cursor: pointer;
 }
 
 .edit.open{
@@ -71,8 +76,6 @@ h6 {
   transform: rotate(360deg);
   transition: transform 0.5s linear;
 }
-
-
 
 .thread-name {
   margin-top: 1em;

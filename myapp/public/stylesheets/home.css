@@ -13,8 +13,6 @@ main {
     box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
 }
 
-
-
 .img-fluid {
     width: 70px;
     height: 70px;
@@ -38,6 +36,10 @@ main {
     word-wrap: break-word;      /* IE */ 
  }
 
+a {
+    color : #3F82C7;
+}
+
 .bottom-hashtag {
     position: absolute;
     bottom: 0;
@@ -52,17 +54,17 @@ main {
     left: 50%;
 }
 
-.fa-heart:hover, .fa-user-friends:hover {
+.fa-heart:hover {
     color: #FA7268;
 }
 
-.fa-heart, .fa-user-friends{
+.fa-heart{
     color: #aaa;
     transform: rotate(0deg);
     transition: transform 0.5s linear;
 }
   
-.fa-heart.open, fa-user-friends.open{
+.fa-heart.open{
     color: #FA7268;
     transform: rotate(360deg);
     transition: transform 0.5s linear;

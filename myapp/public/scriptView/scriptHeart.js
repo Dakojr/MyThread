@@ -92,6 +92,9 @@ function EditThread(id_thread) {
                                 <label class="text-muted" for="thread_content">Tell me what you want update</label>
                                 <textarea type="text" class="form-control" maxlength="255" rows="5"
                                     name="thread_content" placeholder="maximum of 255 characters">` + data[0].text + `</textarea>
+                                <label class="text-muted" for="hashtag">Hashtag</label>
+                                <input type="text" class="form-control" name="hashtag" id="hashtag"
+                                    placeholder="Enter a hashtag" value="` + data[0].hashtag + `">
                             </div>
                             <button type="submit" class="btn btn-primary active" style="float: right;">Update</button>
 
@@ -138,26 +141,29 @@ function randomThread() {
                 <div class="modal-header no-border">
                 <img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png" alt="Responsive image"
                 class="img-fluid rounded-circle" width="70px" height="70px">
-                <a href="/profiles?username=<%- threads[i].username -%>">
+                <a href="/profiles?username=` + data[0].user + `">
                 <h5 class="text-center">@`+ data[0].user + `</h5>
-                </a>
+                </a>`
+      htmlmodal += `
                 <h5 class="text-center" style="margin-top: 2em; margin-left: 2em;">`+ data[0].thread_name + `</h5>     
                 <i class="far fa-times-circle fa-lg ml-auto p-2" onClick= "RemoveChild()" data-dismiss="modal"
                 style="color: #FA7268; float: right;" onmouseover="this.style.color='#3F82C7';"
                 onmouseout="this.style.color='#FA7268';"></i>
                 </div>
                 <div class="modal-body">
-                <p>`+ data[0].text + `</p>
+                <p class="text-center">`+ data[0].text + `</p>
                 </div>
-                <div class="modal-footer no-border" >`
-                  if (data[0].liked === false) {
-                    console.log(data) 
-                    htmlmodal += '<a href="#" class="bottom-heart"> <i onclick="Like(icon0, <%- threads[i].id_thread -%>)" id="icon0" class="fas fa-heart font-awesome"></i> </a>'
-                  } else {
-                    htmlmodal += '<a href="#" class="bottom-heart"> <i onclick="Like(icon0, <%- threads[i].id_thread -%>)" id="icon0" class="fas fa-heart font-awesome open"></i></a>'
-                  } 
-                  
-                htmlmodal += `<i onclick="NewRandom()" data-dismiss="modal" class="fas fa-dice fa-lg" style="color: #FA7268;"
+                <div class="modal-footer no-border" >
+                <a href="/thread?hashtag=` + escape(data[0].hashtag) + `" class="bottom-hashtag" style="position: absolute; left: 3%;">` + data[0].hashtag + `</a>
+                `
+      if (data[0].liked === false) {
+        console.log(data)
+        htmlmodal += '<a href="#" class="bottom-heart"> <i onclick="Like(icon0, <%- threads[i].id_thread -%>)" id="icon0" class="fas fa-heart font-awesome"></i> </a>'
+      } else {
+        htmlmodal += '<a href="#" class="bottom-heart"> <i onclick="Like(icon0, <%- threads[i].id_thread -%>)" id="icon0" class="fas fa-heart font-awesome open"></i></a>'
+      }
+
+      htmlmodal += `<i onclick="NewRandom()" data-dismiss="modal" class="fas fa-dice fa-lg" style="color: #FA7268;"
                         onmouseover="this.style.color='#3F82C7';" onmouseout="this.style.color='#FA7268';"></i>
                 </div>
               </div>

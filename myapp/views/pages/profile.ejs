@@ -49,7 +49,7 @@
                 <h6>@<%= User.username %></h6>
                 <h4 class="text-center thread-name"><%= threads[i].thread_name %></h4>
                 <p class="wordwrap text-center"><%= threads[i].text %></p>
-                <a href="#" class="bottom-hashtag"><%= threads[i].hashtag %></a>
+                <a href="/thread?hashtag=<%- escape(threads[i].hashtag) -%>" class="bottom-hashtag"><%= threads[i].hashtag %></a>
                 <% if (threads[i].liked === false) { %>
                 <a href="#" class="bottom-heart"> <i onclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)"
                         id="icon<%- x -%>" class="fas fa-heart font-awesome"></i> </a>
