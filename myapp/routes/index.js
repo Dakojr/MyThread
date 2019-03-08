@@ -3,6 +3,7 @@ var passport = require('passport')
 require('./../config/passport')
 var csurf = require('csurf')
 var async = require('async')
+const { check, oneOf, validationResult } = require('express-validator/check');
 
 const router = express.Router()
 
@@ -49,26 +50,32 @@ router.get('/thread?:hashtag', isLoggedIn, (req, res, next) => {
     })
 })
 
+router.post('/thread/newthread', isLoggedIn, [
+  check('title', 'Title must have Alphanumeric character').isAlphanumeric(),
+  check('hashtag', 'Hashtag must begin with "#" and contain Alphanumeric character').matches(/^[#][a-zA-Z0-9.()-]/)
+], (req, res) => {
 
-router.post('/thread/newthread', isLoggedIn, (req, res, next) => {
-  var regex = /^A-Za-z0-9/
-
-  var RegexResultTitle = regex.test(req.body.title)
-  var RegexResultContent = regex.test(req.body.thread_content)
-
-  if (RegexResultTitle === false && RegexResultContent === false) {
-    res.redirect('/profile')
+  if (!validationResult(req).isEmpty()) {
+    console.log(validationResult(req).mapped())
+    var errors = req.validationErrors();
+    if (errors) {
+      var messages = [];
+      errors.forEach(function (error) {
+        messages.push(error.msg);
+      })
+      req.flash('errorThread', messages)
+      res.redirect('/profile')
+    }
   } else {
     ThreadControl.newThreadFile(req.session.passport.user, req.body.title, req.body.thread_content)
     ThreadControl.newThread(req.body.title, './thread/' + req.session.passport.user + '/' + req.body.title + '.html', "N", req.session.passport.user, req.body.hashtag)
     res.redirect('/')
   }
-
-
 })
 
 router.get('/thread/delete?:id_thread', isLoggedIn, (req, res, next) => {
   ThreadControl.removeThread(req.query.id_thread)
+  ThreadControl.removeFile('./thread/' + req.session.passport.user + '/' + req.query.name_thread + '.html')
   res.redirect('/profile')
 })
 
@@ -83,18 +90,25 @@ router.get('/thread/edit', isLoggedIn, (req, res, next) => {
     })
 })
 
-router.post('/thread/edit', isLoggedIn, (req, res, next) => {
+router.post('/thread/edit', isLoggedIn, [
+  check('title', 'Title must have Alphanumeric character').isAlphanumeric(),
+  check('hashtag', 'Hashtag must begin with a "#" and contain Alphanumeric character').matches(/^[#][a-zA-Z0-9.()-]/)
+], (req, res, next) => {
 
-  var regex = /^A-Za-z0-9/
-
-  var RegexResultTitle = regex.test(req.body.title)
-  var RegexResultContent = regex.test(req.body.thread_content)
-
-  if (RegexResultTitle === false && RegexResultContent === false) {
-    res.redirect('/profile')
+  if (!validationResult(req).isEmpty()) {
+    console.log(validationResult(req).mapped())
+    var errors = req.validationErrors();
+    if (errors) {
+      var messages = [];
+      errors.forEach(function (error) {
+        messages.push(error.msg);
+      })
+      req.flash('errorThread', messages)
+      res.redirect('/profile')
+    }
   } else {
     ThreadControl.getThreadById(req.body.id_thread)
-      .then((data) => { 
+      .then((data) => {
         ThreadControl.removeFile(data[0].pathfile_thread)
         ThreadControl.newThreadFile(req.session.passport.user, req.body.title, req.body.thread_content)
         ThreadControl.updateThread(req.body.id_thread, req.body.title, './thread/' + req.session.passport.user + '/' + req.body.title + '.html', req.body.hashtag)
@@ -156,6 +170,7 @@ router.get('/like', isLoggedIn, (req, res, next) => {
 
 //PROFIL
 router.get('/profile', isLoggedIn, function (req, res, next) {
+  var messages = req.flash('errorThread'); //Display the error message in passport.js
   const getUser = () => {
     return new Promise((resolve, reject) => {
       UserControl.getUserByID(req.session.passport.user)
@@ -180,7 +195,8 @@ router.get('/profile', isLoggedIn, function (req, res, next) {
         .then((data) => { //threads without text
           ReadPushText(data)
             .then((Threads) => { //Threads with Text
-              res.render('pages/profile', { message: "message", User: User, threads: Threads, csurfToken: req.csrfToken() })
+              console.log(messages)
+              res.render('pages/profile', { messages: messages, User: User, threads: Threads, csurfToken: req.csrfToken(), hasErrors: messages.length > 0 })
             })
         })
     })

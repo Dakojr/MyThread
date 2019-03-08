@@ -35,7 +35,7 @@ function RemoveChild() {
 
 // REMOVE THREAD
 
-function RemoveThread(id_thread) {
+function RemoveThread(id_thread, name_thread) {
 
   var htmlmodal = `<div class="modal fade" id="updatethread" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
             aria-hidden="true" data-backdrop="static" data-keyboard="false">
@@ -49,7 +49,7 @@ function RemoveThread(id_thread) {
                             onmouseout="this.style.color='#FA7268';"></i>
                     </div>
                     <div class="modal-body d-flex justify-content-center">
-                        <a href="/thread/delete?id_thread=` + id_thread + `"><i class="fas fa-trash" style="color: #FA7268; float: right;" onmouseover="this.style.color='#3F82C7';"
+                        <a href="/thread/delete?id_thread=` + id_thread + ` &name_thread=` + name_thread + `"><i class="fas fa-trash" style="color: #FA7268; float: right;" onmouseover="this.style.color='#3F82C7';"
                         onmouseout="this.style.color='#FA7268';"></i></a>
                     </div>
                 </div>
