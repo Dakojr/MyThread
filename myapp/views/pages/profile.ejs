@@ -27,8 +27,8 @@
                     <strong>Threads</strong>
                 </div>
                 <div class="justify-content-between d-flex">
-                    <p class="lead">100</p>
-                    <p class="lead">200</p>
+                    <a href="#" onclick="DisplayFollower(<%- User.id_user -%>)" class="lead"><%= User.follower[0]['COUNT(*)'] %></a>
+                    <p class="lead"><%= User.follow[0]['COUNT(*)'] %></p>
                     <p class="lead">300</p>
                 </div>
             </div>
@@ -122,6 +122,7 @@
     </footer>
 
     <script src="scriptView/scriptHeart.js"></script>
+    <script src="scriptView/scriptFollow.js"></script>
 
 </body>
 

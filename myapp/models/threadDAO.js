@@ -10,7 +10,7 @@ class ThreadDAO {
     getRandomThread(id_user) {
         var arr = []
         return new Promise((resolve, reject) => {
-            this.dao.all("SELECT t.*, u.username FROM thread t, user u WHERE t.id_user = u.id_user ORDER BY random() LIMIT 1")
+            this.dao.all("SELECT t.*, u.username FROM thread t, user u WHERE t.id_user = u.id_user ORDER BY random() LIMIT 1")            
                 .then((data) => {
                     data.forEach(element => {
                         const Thread = new ThreadClass()
@@ -130,8 +130,6 @@ class ThreadDAO {
                 })
         })
     }
-
-
 
     getAllThread(id_user) {
         var arr = []

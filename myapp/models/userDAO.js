@@ -52,6 +52,70 @@ class UserDAO {
         })
     }
 
+    // FOLLOW & FOLLOWER COUNT
+
+    getFollowerCountByIdUser(id_user) {
+        return new Promise((resolve, reject) => {
+            var follower = []
+            this.dao.all("SELECT COUNT(*) FROM follower WHERE id_user = '" + id_user + "'")
+                .then((data) => {
+                    data.forEach(element => {
+                        follower.push(element)
+                    });
+                })
+                .then(() => {
+                    resolve(follower)
+                })
+        })
+    }
+
+    getFollowCountByIdUser(id_user) {
+        return new Promise((resolve, reject) => {
+            var follow = []
+            this.dao.all("SELECT COUNT(*) FROM follower WHERE id_user_connect = '" + id_user + "'")
+                .then((data) => {
+                    data.forEach(element => {
+                        follow.push(element)
+                    });
+                })
+                .then(() => {
+                    resolve(follow)
+                })
+        })
+    }
+
+    //FOLLOW & FOLLOWER
+
+    getFollowerByIdUser(id_user) {
+        return new Promise((resolve, reject) => {
+            var follower = []
+            this.dao.all("SELECT f.id_user_connect, u.username FROM follower f, user u WHERE f.id_user = '" + id_user + "' AND f.id_user_connect = u.id_user")
+                .then((data) => {
+                    data.forEach(element => {
+                        follower.push(element)
+                    });
+                })
+                .then(() => {
+                    resolve(follower)
+                })
+        })
+    }
+
+    getFollowByIdUser(id_user) {
+        return new Promise((resolve, reject) => {
+            var follow = []
+            this.dao.all("SELECT * FROM follower WHERE id_user_connect = '" + id_user + "'")
+                .then((data) => {
+                    data.forEach(element => {
+                        follow.push(element)
+                    });
+                })
+                .then(() => {
+                    resolve(follow)
+                })
+        })
+    }
+
     create(username, password, email, telephone = "") {
         return this.dao.run(
             `INSERT INTO user (username, password, email, telephone)

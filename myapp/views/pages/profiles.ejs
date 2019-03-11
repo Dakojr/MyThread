@@ -31,8 +31,8 @@
                     <strong>Threads</strong>
                 </div>
                 <div class="justify-content-between d-flex">
-                    <p class="lead">100</p>
-                    <p class="lead">200</p>
+                    <p class="lead"><%= User.follower[0]['COUNT(*)'] %></p>
+                    <p class="lead"><%= User.follow[0]['COUNT(*)'] %></p>
                     <p class="lead">300</p>
                 </div>
             </div>

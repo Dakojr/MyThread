@@ -51,15 +51,17 @@ router.get('/thread?:hashtag', isLoggedIn, (req, res, next) => {
 })
 
 router.post('/thread/newthread', isLoggedIn, [
-  check('title', 'Title must have Alphanumeric character').isAlphanumeric(),
-  check('hashtag', 'Hashtag must begin with "#" and contain Alphanumeric character').matches(/^[#][a-zA-Z0-9.()-]/)
+
+  check('title', 'Title must have Alphanumeric character and contain no more than 20 characters').isAlphanumeric().isLength({ max: 20 }),
+  check('thread_content', 'Thread Content must contain between 0 ans 255 characters').isLength({ min: 1, max: 255 }),
+  check('hashtag', 'Hashtag must begin with "#" and contain Alphanumeric character and contain no more than 25 characters').matches(/^[#][a-zA-Z0-9.()-]/).isLength({ max: 25 })
 ], (req, res) => {
 
+  var messages = [];
+
   if (!validationResult(req).isEmpty()) {
-    console.log(validationResult(req).mapped())
     var errors = req.validationErrors();
     if (errors) {
-      var messages = [];
       errors.forEach(function (error) {
         messages.push(error.msg);
       })
@@ -67,9 +69,28 @@ router.post('/thread/newthread', isLoggedIn, [
       res.redirect('/profile')
     }
   } else {
-    ThreadControl.newThreadFile(req.session.passport.user, req.body.title, req.body.thread_content)
-    ThreadControl.newThread(req.body.title, './thread/' + req.session.passport.user + '/' + req.body.title + '.html', "N", req.session.passport.user, req.body.hashtag)
-    res.redirect('/')
+
+    arr = []
+
+    ThreadControl.getAllThreadByIdUser(req.session.passport.user, req.session.passport.user)
+      .then((data) => {
+        if (data.length > 0) {
+          data.forEach(element => {
+            if (element.thread_name === req.body.title) {
+              arr.push(element)
+            }
+          });
+        }
+        if (arr.length === 0) {
+          ThreadControl.newThreadFile(req.session.passport.user, req.body.title, req.body.thread_content)
+          ThreadControl.newThread(req.body.title, './thread/' + req.session.passport.user + '/' + req.body.title + '.html', "N", req.session.passport.user, req.body.hashtag)
+          res.redirect('/')
+        } else {
+          messages.push("Title already take")
+          req.flash('errorThread', messages)
+          res.redirect('/profile')
+        }
+      })
   }
 })
 
@@ -78,7 +99,6 @@ router.get('/thread/delete?:id_thread', isLoggedIn, (req, res, next) => {
   ThreadControl.removeFile('./thread/' + req.session.passport.user + '/' + req.query.name_thread + '.html')
   res.redirect('/profile')
 })
-
 
 router.get('/thread/edit', isLoggedIn, (req, res, next) => {
   ThreadControl.getThreadById(req.query.id_thread)
@@ -91,8 +111,9 @@ router.get('/thread/edit', isLoggedIn, (req, res, next) => {
 })
 
 router.post('/thread/edit', isLoggedIn, [
-  check('title', 'Title must have Alphanumeric character').isAlphanumeric(),
-  check('hashtag', 'Hashtag must begin with a "#" and contain Alphanumeric character').matches(/^[#][a-zA-Z0-9.()-]/)
+  check('title', 'Title must have Alphanumeric character and contain no more than 20 characters').isAlphanumeric().isLength({ max: 20 }),
+  check('thread_content', 'Thread Content must contain no more than 255 characters').isLength({ min: 1, max: 255 }),
+  check('hashtag', 'Hashtag must begin with "#" and contain Alphanumeric character and contain no more than 25 characters').matches(/^[#][a-zA-Z0-9.()-]/).isLength({ max: 25 })
 ], (req, res, next) => {
 
   if (!validationResult(req).isEmpty()) {
@@ -127,6 +148,16 @@ router.get('/thread/random', isLoggedIn, (req, res, next) => {
         })
     })
 })
+
+// FOLLOWER
+
+router.get('/displayfollower?:id_user', isLoggedIn, (req, res, next) => {
+  UserControl.getFollowerByIdUser(req.query.id_user)
+    .then((data) => {
+      res.json(data)
+    })
+})
+
 
 // FOLLOW BUTTON
 
@@ -195,8 +226,15 @@ router.get('/profile', isLoggedIn, function (req, res, next) {
         .then((data) => { //threads without text
           ReadPushText(data)
             .then((Threads) => { //Threads with Text
-              console.log(messages)
-              res.render('pages/profile', { messages: messages, User: User, threads: Threads, csurfToken: req.csrfToken(), hasErrors: messages.length > 0 })
+              UserControl.getFollowerCountByIdUser(req.session.passport.user)
+                .then((follower) => {
+                  User.follower = follower
+                  UserControl.getFollowCountByIdUser(req.session.passport.user)
+                    .then((follow) => {
+                      User.follow = follow
+                      res.render('pages/profile', { messages: messages, User: User, threads: Threads, csurfToken: req.csrfToken(), hasErrors: messages.length > 0 })
+                    })
+                })
             })
         })
     })
@@ -210,7 +248,6 @@ router.get('/profiles?:username', isLoggedIn, (req, res, next) => {
 
   UserControl.getUserByUsername(req.query.username, req.session.passport.user)
     .then((User) => {
-      console.log(User)
       if (User.id_user === req.session.passport.user) {
         res.redirect('/profile')
       }
@@ -218,7 +255,15 @@ router.get('/profiles?:username', isLoggedIn, (req, res, next) => {
         .then((data) => {
           ReadPushText(data)
             .then((Threads) => {
-              res.render('pages/profiles', { User: User, threads: Threads, user_connect: req.session.passport.user, csurfToken: req.csrfToken() })
+              UserControl.getFollowerCountByIdUser(User.id_user)
+                .then((follower) => {
+                  User.follower = follower
+                  UserControl.getFollowCountByIdUser(User.id_user)
+                    .then((follow) => {
+                      User.follow = follow
+                      res.render('pages/profiles', { User: User, threads: Threads, user_connect: req.session.passport.user, csurfToken: req.csrfToken() })
+                    })
+                })
             })
         })
     })
