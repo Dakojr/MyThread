@@ -28,8 +28,8 @@
                 </div>
                 <div class="justify-content-between d-flex">
                     <a href="#" onclick="DisplayFollower(<%- User.id_user -%>)" class="lead"><%= User.follower[0]['COUNT(*)'] %></a>
-                    <p class="lead"><%= User.follow[0]['COUNT(*)'] %></p>
-                    <p class="lead">300</p>
+                    <a href="#" onclick="DisplayFollow(<%- User.id_user -%>)" class="lead"><%= User.follow[0]['COUNT(*)'] %></a>
+                    <p class="lead"><%= threads.threadcount[0]['COUNT(*)'] %></p>
                 </div>
             </div>
         </div>

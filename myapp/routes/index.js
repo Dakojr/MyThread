@@ -158,6 +158,13 @@ router.get('/displayfollower?:id_user', isLoggedIn, (req, res, next) => {
     })
 })
 
+router.get('/displayfollow?:id_user', isLoggedIn, (req, res, next) => {
+  UserControl.getFollowByIdUser(req.query.id_user)
+    .then((data) => {
+      res.json(data)
+    })
+})
+
 
 // FOLLOW BUTTON
 
@@ -232,7 +239,12 @@ router.get('/profile', isLoggedIn, function (req, res, next) {
                   UserControl.getFollowCountByIdUser(req.session.passport.user)
                     .then((follow) => {
                       User.follow = follow
-                      res.render('pages/profile', { messages: messages, User: User, threads: Threads, csurfToken: req.csrfToken(), hasErrors: messages.length > 0 })
+                      ThreadControl.getThreadCountByIdUser(req.session.passport.user)
+                        .then((threadcount) => {
+                          Threads.threadcount = threadcount
+                          console.log(Threads)
+                          res.render('pages/profile', { messages: messages, User: User, threads: Threads, csurfToken: req.csrfToken(), hasErrors: messages.length > 0 })
+                        })
                     })
                 })
             })
@@ -261,7 +273,11 @@ router.get('/profiles?:username', isLoggedIn, (req, res, next) => {
                   UserControl.getFollowCountByIdUser(User.id_user)
                     .then((follow) => {
                       User.follow = follow
-                      res.render('pages/profiles', { User: User, threads: Threads, user_connect: req.session.passport.user, csurfToken: req.csrfToken() })
+                      ThreadControl.getThreadCountByIdUser(User.id_user)
+                        .then((threadcount) => {
+                          Threads.threadcount = threadcount
+                          res.render('pages/profiles', { User: User, threads: Threads, user_connect: req.session.passport.user, csurfToken: req.csrfToken() })
+                        })
                     })
                 })
             })

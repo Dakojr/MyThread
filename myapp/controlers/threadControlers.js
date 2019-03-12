@@ -89,6 +89,20 @@ module.exports = {
         })
     },
 
+    getThreadCountByIdUser: (id_user) => {
+        const dao = new AppDAOfs('./db/mythread.db')
+        const ThreadDAO = new ThreadDAOfs(dao)
+        return new Promise((resolve, reject) => {
+            ThreadDAO.getThreadCountByIdUser(id_user)
+                .then((data) => {
+                    dao.db.close(() => {
+                        console.log("BDD CLOSE !")
+                    })
+                    resolve(data)
+                })
+        })
+    },
+
     removeThread: (id_thread) => {
         const dao = new AppDAOfs('./db/mythread.db')
         const ThreadDAO = new ThreadDAOfs(dao)

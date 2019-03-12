@@ -137,7 +137,7 @@ function randomThread() {
       var htmlmodal = `<div class="modal fade" id="updatethread" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
             aria-hidden="true" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog modal-dialog-centered" role="document">                
-                <div class="modal-content" ondblclick="myHeart(icon0)">
+                <div class="modal-content" ondblclick="Like(icon0,` + data[0].id_thread + `)">
                 <div class="modal-header no-border">
                 <img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png" alt="Responsive image"
                 class="img-fluid rounded-circle" width="70px" height="70px">
@@ -158,9 +158,9 @@ function randomThread() {
                 `
       if (data[0].liked === false) {
         console.log(data)
-        htmlmodal += '<a href="#" class="bottom-heart"> <i onclick="Like(icon0, <%- threads[i].id_thread -%>)" id="icon0" class="fas fa-heart font-awesome"></i> </a>'
+        htmlmodal += '<a href="#" class="bottom-heart"> <i onclick="Like(icon0,' + data[0].id_thread + ')"  id="icon0" class="fas fa-heart font-awesome"></i> </a>'
       } else {
-        htmlmodal += '<a href="#" class="bottom-heart"> <i onclick="Like(icon0, <%- threads[i].id_thread -%>)" id="icon0" class="fas fa-heart font-awesome open"></i></a>'
+        htmlmodal += '<a href="#" class="bottom-heart"> <i onclick="Like(icon0, ,' + data[0].id_thread + ')" id="icon0" class="fas fa-heart font-awesome open"></i></a>'
       }
 
       htmlmodal += `<i onclick="NewRandom()" data-dismiss="modal" class="fas fa-dice fa-lg" style="color: #FA7268;"

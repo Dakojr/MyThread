@@ -104,7 +104,7 @@ class UserDAO {
     getFollowByIdUser(id_user) {
         return new Promise((resolve, reject) => {
             var follow = []
-            this.dao.all("SELECT * FROM follower WHERE id_user_connect = '" + id_user + "'")
+            this.dao.all("SELECT f.id_user, u.username FROM follower f, user u WHERE f.id_user_connect = '" + id_user + "' AND f.id_user = u.id_user")
                 .then((data) => {
                     data.forEach(element => {
                         follow.push(element)

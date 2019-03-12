@@ -172,6 +172,21 @@ class ThreadDAO {
         })
     }
 
+    getThreadCountByIdUser(id_user) {
+        return new Promise((resolve, reject) => {
+            var follow = []
+            this.dao.all("SELECT COUNT(*) FROM thread WHERE id_user = '" + id_user + "'")
+                .then((data) => {
+                    data.forEach(element => {
+                        follow.push(element)
+                    });
+                })
+                .then(() => {
+                    resolve(follow)
+                })
+        })
+    }
+
     removeThread(id_thread) {
         return new Promise((resolve, reject) => {
             this.dao.run(
