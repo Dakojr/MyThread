@@ -120,7 +120,6 @@ function EditThread(id_thread) {
 function NewRandom() {
 
   const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
-
   RemoveChild()
   waitFor(50)
   console.log("we have wait")
@@ -136,16 +135,24 @@ function randomThread() {
 
       var htmlmodal = `<div class="modal fade" id="updatethread" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
             aria-hidden="true" data-backdrop="static" data-keyboard="false">
-                <div class="modal-dialog modal-dialog-centered" role="document">                
+                <div class="modal-dialog modal-dialog-centered" role="document">                        
                 <div class="modal-content" ondblclick="Like(icon0,` + data[0].id_thread + `)">
-                <div class="modal-header no-border">
-                <img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png" alt="Responsive image"
-                class="img-fluid rounded-circle" width="70px" height="70px">
+                <div class="modal-header no-border">`
+
+
+                if (data[0].pppathfile === null) { 
+                  htmlmodal += `<img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png" alt="Responsive image"
+                      class="img-fluid rounded-circle">`
+               } else { 
+                htmlmodal += '<img src="' + data[0].pppathfile + '" alt="Responsive image" class="img-fluid rounded-circle" width="70px" height="70px">'
+                  } 
+
+                htmlmodal += `
                 <a href="/profiles?username=` + data[0].user + `">
-                <h5 class="text-center">@`+ data[0].user + `</h5>
+                <h5>@`+ data[0].user + `</h5>
                 </a>`
       htmlmodal += `
-                <h5 class="text-center" style="margin-top: 2em; margin-left: 2em;">`+ data[0].thread_name + `</h5>     
+                <h5 style="margin: 0 auto;">`+ data[0].thread_name + `</h5>     
                 <i class="far fa-times-circle fa-lg ml-auto p-2" onClick= "RemoveChild()" data-dismiss="modal"
                 style="color: #FA7268; float: right;" onmouseover="this.style.color='#3F82C7';"
                 onmouseout="this.style.color='#FA7268';"></i>

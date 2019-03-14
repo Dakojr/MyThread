@@ -3,12 +3,17 @@ var passport = require('passport')
 require('./../config/passport')
 var csurf = require('csurf')
 var async = require('async')
+var fileupload = require('express-fileupload')
 const { check, oneOf, validationResult } = require('express-validator/check');
 
 const router = express.Router()
+router.use(fileupload({
+  limits: { fileSize: 2 * 1024 * 1024 },
+}))
 
 var csurfProtect = csurf();
 router.use(csurfProtect); //Every routes by him is Protect by Csrf protection
+
 
 const utils = require('./../config/utils') //generation Token
 const UserControl = require('./../controlers/usercontroler')
@@ -16,9 +21,11 @@ const ThreadControl = require('./../controlers/threadControlers')
 const LikeControl = require('./../controlers/likeControler')
 const FollowControl = require('./../controlers/followControler')
 
+
+
 // HOME PAGE
 
-router.get('/', isLoggedIn, function (req, res, next) {
+router.get('/', isLoggedIn, (req, res, next) => {
 
   const start = () => {
     return new Promise((resolve, reject) => {
@@ -38,6 +45,31 @@ router.get('/', isLoggedIn, function (req, res, next) {
         })
     })
 
+})
+
+router.get('/discover', isLoggedIn, (req, res, next) => {
+  const start = () => {
+    return new Promise((resolve, reject) => {
+      ThreadControl.getRandomThreads(req.session.passport.user)
+        .then((data) => {
+          resolve(data)
+        })
+    })
+  }
+
+
+  start()
+    .then((data) => {
+      ReadPushText(data)
+        .then((Threads) => {
+          res.render('pages/index', { message: "message", threads: Threads, user_connect: req.session.passport.user, csurfToken: req.csrfToken() })
+        })
+    })
+})
+
+
+router.get('/notifications', isLoggedIn, (req, res, next) => {
+  
 })
 
 router.get('/thread?:hashtag', isLoggedIn, (req, res, next) => {
@@ -83,7 +115,7 @@ router.post('/thread/newthread', isLoggedIn, [
         }
         if (arr.length === 0) {
           ThreadControl.newThreadFile(req.session.passport.user, req.body.title, req.body.thread_content)
-          ThreadControl.newThread(req.body.title, './thread/' + req.session.passport.user + '/' + req.body.title + '.html', "N", req.session.passport.user, req.body.hashtag)
+          ThreadControl.newThread(req.body.title, './user/' + req.session.passport.user + '/threads' + '/' + req.body.title + '.html', "N", req.session.passport.user, req.body.hashtag)
           res.redirect('/')
         } else {
           messages.push("Title already take")
@@ -96,7 +128,7 @@ router.post('/thread/newthread', isLoggedIn, [
 
 router.get('/thread/delete?:id_thread', isLoggedIn, (req, res, next) => {
   ThreadControl.removeThread(req.query.id_thread)
-  ThreadControl.removeFile('./thread/' + req.session.passport.user + '/' + req.query.name_thread + '.html')
+  ThreadControl.removeFile('./user/' + req.session.passport.user + '/threads' + '/' + req.query.name_thread + '.html')
   res.redirect('/profile')
 })
 
@@ -132,7 +164,7 @@ router.post('/thread/edit', isLoggedIn, [
       .then((data) => {
         ThreadControl.removeFile(data[0].pathfile_thread)
         ThreadControl.newThreadFile(req.session.passport.user, req.body.title, req.body.thread_content)
-        ThreadControl.updateThread(req.body.id_thread, req.body.title, './thread/' + req.session.passport.user + '/' + req.body.title + '.html', req.body.hashtag)
+        ThreadControl.updateThread(req.body.id_thread, req.body.title, './user/' + req.session.passport.user + '/threads' + '/' + req.body.title + '.html', req.body.hashtag)
         res.redirect('/')
       })
   }
@@ -242,7 +274,6 @@ router.get('/profile', isLoggedIn, function (req, res, next) {
                       ThreadControl.getThreadCountByIdUser(req.session.passport.user)
                         .then((threadcount) => {
                           Threads.threadcount = threadcount
-                          console.log(Threads)
                           res.render('pages/profile', { messages: messages, User: User, threads: Threads, csurfToken: req.csrfToken(), hasErrors: messages.length > 0 })
                         })
                     })
@@ -326,12 +357,30 @@ router.post('/signin', passport.authenticate('local.signin', {
   });
 
 
-router.get('/logout', function (req, res) {
+router.get('/logout', isLoggedIn, function (req, res) {
   // clear the remember me cookie when logging out
   res.clearCookie('remember_me');
   req.logout();
   res.redirect('/');
 });
+
+router.post('/uploadavatar', isLoggedIn, (req, res) => {
+  console.log(req.files.avatar.name)
+  ThreadControl.newFolderAvatar(req.session.passport.user)
+  UserControl.setpppathfile(req.session.passport.user, '/' + req.session.passport.user + '/avatar/avatar.jpg')
+    .then(() => {
+      req.files.avatar.mv('./user/' + req.session.passport.user + '/avatar/avatar.jpg', (err) => {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log('its done')
+          res.redirect('/profile')
+        }
+      })
+    })
+})
+
+
 
 module.exports = router
 

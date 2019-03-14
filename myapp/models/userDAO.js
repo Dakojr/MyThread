@@ -9,7 +9,7 @@ class UserDAO {
     getUserByID(id) {
         const User = new UserClass()
         return new Promise((resolve, reject) => {
-            this.dao.all("SELECT id_user, username, email, telephone, date_user FROM user WHERE id_user = '" + id + "'")
+            this.dao.all("SELECT id_user, username, email, telephone, date_user, pppathfile FROM user WHERE id_user = '" + id + "'")
                 .then((data) => {
                     data.forEach(element => {
                         User.id_user = element.id_user
@@ -17,6 +17,8 @@ class UserDAO {
                         User.email = element.email
                         User.telephone = element.telephone
                         User.date_user = element.date_user
+                        User.pppathfile = element.pppathfile
+
                     });
                 })
                 .then(function () {
@@ -28,7 +30,7 @@ class UserDAO {
     getUserByUsername(username, id_user_connect) {
         const User = new UserClass()
         return new Promise((resolve, reject) => {
-            this.dao.all("SELECT id_user, username, email, telephone, date_user FROM user WHERE username = '" + username + "'")
+            this.dao.all("SELECT id_user, username, email, telephone, date_user, pppathfile FROM user WHERE username = '" + username + "'")
                 .then((data) => {
                     data.forEach(element => {
                         User.id_user = element.id_user
@@ -36,6 +38,8 @@ class UserDAO {
                         User.email = element.email
                         User.telephone = element.telephone
                         User.date_user = element.date_user
+                        User.pppathfile = element.pppathfile
+
                         this.dao.get("SELECT id_user, id_user_connect FROM follower WHERE id_user = '" + User.id_user + "'  AND id_user_connect = '" + id_user_connect + "'")
                             .then((data) => {
                                 console.log
@@ -116,13 +120,6 @@ class UserDAO {
         })
     }
 
-    create(username, password, email, telephone = "") {
-        return this.dao.run(
-            `INSERT INTO user (username, password, email, telephone)
-            VALUES (?, ?, ?, ?)`,
-            [username, password, email, telephone])
-    }
-
     getUserByEmail(email) {
         const User = new UserClass()
         return new Promise((resolve, reject) => {
@@ -135,12 +132,29 @@ class UserDAO {
                         User.email = element.email
                         User.telephone = element.telephone
                         User.date_user = element.date_user
+                        User.pppathfile = element.pppathfile
                     });
                 })
                 .then(function () {
                     resolve(User)
                 })
         })
+    }
+
+    setpppathfile(id_user_connect, pathfile) {
+        return this.dao.run(
+            `UPDATE user
+            SET pppathfile = ?
+            WHERE id_user = ?`,
+            [pathfile, id_user_connect])
+
+    }
+
+    create(username, password, email, telephone = "") {
+        return this.dao.run(
+            `INSERT INTO user (username, password, email, telephone) 
+            VALUES (?, ?, ?, ?)`,
+            [username, password, email, telephone])
     }
 
     encryptPassword(password) {

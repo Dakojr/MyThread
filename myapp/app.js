@@ -31,11 +31,11 @@ app.use(session({
   }
 }))
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'user')));
 app.use(flash())
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.authenticate('remember-me'));
-
 app.use((req, res, next) => {
   res.locals.login = req.isAuthenticated();
   res.locals.session = req.session;

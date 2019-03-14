@@ -16,8 +16,14 @@
 
     <main>
         <input type="hidden" name="_csrf" value="<%= csurfToken %>">
-        <img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png" alt="Responsive image"
-            class="img-fluid rounded-circle">
+        <% if (User.pppathfile === null) { %>
+        <a href="#" data-target="#uploadavatar" data-toggle="modal"><img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png" alt="Responsive image"
+            class="pp rounded-circle" ></a>
+        <% } else { %>
+        <a href="#" data-target="#uploadavatar" data-toggle="modal"><img src="<%= User.pppathfile %>" alt="Responsive image"
+            class="pp rounded-circle" ></a>
+        <% } %>
+   
         <div class="container">
             <div class="bottom">
                 <h3>@<%= User.username %></h3>
@@ -27,8 +33,10 @@
                     <strong>Threads</strong>
                 </div>
                 <div class="justify-content-between d-flex">
-                    <a href="#" onclick="DisplayFollower(<%- User.id_user -%>)" class="lead"><%= User.follower[0]['COUNT(*)'] %></a>
-                    <a href="#" onclick="DisplayFollow(<%- User.id_user -%>)" class="lead"><%= User.follow[0]['COUNT(*)'] %></a>
+                    <a href="#" onclick="DisplayFollower(<%- User.id_user -%>)"
+                        class="lead"><%= User.follower[0]['COUNT(*)'] %></a>
+                    <a href="#" onclick="DisplayFollow(<%- User.id_user -%>)"
+                        class="lead"><%= User.follow[0]['COUNT(*)'] %></a>
                     <p class="lead"><%= threads.threadcount[0]['COUNT(*)'] %></p>
                 </div>
             </div>
@@ -50,8 +58,19 @@
 
             <% for(var i = 0; i < threads.length; i++) { %>
             <div class="thread" ondblclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)">
-                <img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png"
-                    alt="Responsive image" class="img-thread rounded-circle">
+
+
+            <% if (User.pppathfile === null) { %>
+            <a href="#" data-target="#uploadavatar" data-toggle="modal"><img
+                    src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png" alt="Responsive image"
+                    class="img-thread rounded-circle"></a>
+            <% } else { %>
+            <a href="#" data-target="#uploadavatar" data-toggle="modal"><img src="<%= User.pppathfile %>"
+                    alt="Responsive image" class="img-thread rounded-circle"></a>
+            <% } %>
+
+
+
                 <i class="fas fa-pen-alt edit" onclick="EditThread(<%- threads[i].id_thread -%>)"
                     id="edit<%- x -%>"></i>
                 <i class="fas fa-trash edit"
@@ -85,7 +104,7 @@
                             onmouseout="this.style.color='#FA7268';"></i>
                     </div>
                     <div class="modal-body">
-                        <form action="/thread/newthread" method="POST">
+                        <form action="/thread/newthread" method="POST" >
                             <div class="form-group text-center">
                                 <strong for="title">Title</strong>
                                 <input type="text" class="form-control" name="title" id="title"
@@ -100,6 +119,35 @@
                                     placeholder="Enter a hashtag" value="#">
                             </div>
                             <button type="submit" class="btn btn-primary active" style="float: right;">Thread</button>
+                            <input type="hidden" name="_csrf" value="<%= csurfToken %>">
+                            <!-- Protect the page with a token -->
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="uploadavatar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header d-flex justify-content-center">
+                        <h4 class="">New Thread</h4>
+                        <i class="far fa-times-circle fa-lg ml-auto p-2" data-dismiss="modal"
+                            style="color: #FA7268; float: right;" onmouseover="this.style.color='#3F82C7';"
+                            onmouseout="this.style.color='#FA7268';"></i>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/uploadavatar" method="POST" ref="UploadForm" encType="multipart/form-data">
+
+                            <label for="avatar">Choose a profile picture:</label>
+                            <p class="text-muted">* Max Size 2mb</p>
+
+                            <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg">
+
+                            <button type="submit" class="btn btn-primary" style="float: right;">Submit</button>
                             <input type="hidden" name="_csrf" value="<%= csurfToken %>">
                             <!-- Protect the page with a token -->
                         </form>

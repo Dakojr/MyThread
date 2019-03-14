@@ -19,6 +19,20 @@ module.exports = {
         })
     },
 
+    getRandomThreads: (id_user) => {
+        const dao = new AppDAOfs('./db/mythread.db')
+        const ThreadDAO = new ThreadDAOfs(dao)
+        return new Promise((resolve, reject) => {
+            ThreadDAO.getRandomThreads(id_user)
+                .then((data) => {
+                    dao.db.close(() => {
+                        console.log("BDD CLOSE !")
+                    })
+                    resolve(data)
+                })
+        })
+    },
+
     getAllThreadByIdUser: (id_user, id_userIsLog) => {
         const dao = new AppDAOfs('./db/mythread.db')
         const ThreadDAO = new ThreadDAOfs(dao)
@@ -167,15 +181,25 @@ module.exports = {
         })
     },
 
-    newThreadFile: (id_user, filename, content) => {
-        fs.mkdir('./thread/' + id_user, { recursive: true }, (err) => {
+    newFolderAvatar : (id_user) => {
+        fs.mkdir('./user/' + id_user + '/avatar', { recursive: true }, (err) => {
             if (err) {
                 throw err
             } else {
-                console.log("Folder is Create")
+                console.log("user / avatar Folder is Create")
             }
         })
-        fs.appendFile('./thread/' + id_user + "/" + filename + '.html', content, (err) => {
+    },
+
+    newThreadFile: (id_user, filename, content) => {
+        fs.mkdirSync('./user/' + id_user + '/threads', { recursive: true }, (err) => {
+            if (err) {
+                throw err
+            } else {
+                console.log("user / thread Folder is Create")
+            }
+        })
+        fs.appendFile('./user/' + id_user + '/threads/' + filename + '.html', content, (err) => {
             if (err) {
                 throw err
             } else {
