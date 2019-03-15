@@ -5,6 +5,7 @@ var csurf = require('csurf')
 var async = require('async')
 var fileupload = require('express-fileupload')
 const { check, oneOf, validationResult } = require('express-validator/check');
+const fs = require('fs')
 
 const router = express.Router()
 router.use(fileupload({
@@ -60,6 +61,7 @@ router.get('/discover', isLoggedIn, (req, res, next) => {
 
   start()
     .then((data) => {
+      console.log(data)
       ReadPushText(data)
         .then((Threads) => {
           res.render('pages/index', { message: "message", threads: Threads, user_connect: req.session.passport.user, csurfToken: req.csrfToken() })
@@ -69,6 +71,13 @@ router.get('/discover', isLoggedIn, (req, res, next) => {
 
 
 router.get('/notifications', isLoggedIn, (req, res, next) => {
+  UserControl.newNotifFile(req.session.passport.user, 'notifications', 'HEHO')
+  UserControl.setnotifpathfile(req.session.passport.user, '/' + req.session.passport.user + '/notifications/notifications.html')
+  readNotif('./user/' + req.session.passport.user + '/notifications/notifications.html')
+    .then((data) => {
+      res.json(data)
+    })
+  
   
 })
 
@@ -441,4 +450,14 @@ const ReadPushText = async (array) => {
     await waitFor(20)
     resolve(array)
   })
+}
+
+function readNotif(pathfile) {
+  return new Promise((resolve, reject) => {
+    ThreadControl.readThread(pathfile)
+    .then((data) => {
+      resolve(data)
+    })
+  })
+
 }

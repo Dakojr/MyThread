@@ -1,5 +1,5 @@
 const Promise = require('bluebird')
-
+const fs = require('fs')
 const UserDAOfs = require('./../models/userDAO')
 const AppDAOfs = require('./../models/AppDAO')
 const Userfs = require('./../class/userClass')
@@ -86,6 +86,37 @@ module.exports = {
                         console.log("BDD CLOSE !")
                     })
                     resolve(data)
+                })
+        })
+    },
+
+    newNotifFile: (id_user, filename, content) => {
+        fs.mkdirSync('./user/' + id_user + '/notifications', { recursive: true }, (err) => {
+            if (err) {
+                throw err
+            } else {
+                console.log("user / notifications Folder is Create")
+            }
+        })
+        fs.appendFile('./user/' + id_user + '/notifications/' + filename + '.html', content, (err) => {
+            if (err) {
+                throw err
+            } else {
+                console.log("File is Create")
+            }
+        })
+    },
+
+    setnotifpathfile: (id_user_connect ,pathfile) => {
+        const dao = new AppDAOfs('./db/mythread.db')
+        const UserDAO = new UserDAOfs(dao)
+        return new Promise((resolve, reject) => {
+            UserDAO.setnotifpathfile(id_user_connect, pathfile)
+                .then(() => {
+                    dao.db.close(() => {
+                        console.log("BDD CLOSE !")
+                    })
+                    resolve('ITS OKAAAAAY')
                 })
         })
     },

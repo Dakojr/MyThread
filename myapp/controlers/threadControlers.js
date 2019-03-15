@@ -1,5 +1,5 @@
 const Promise = require('bluebird')
-var fs = require('fs')
+const fs = require('fs')
 const ThreadDAOfs = require('./../models/threadDAO')
 const AppDAOfs = require('./../models/AppDAO')
 

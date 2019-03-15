@@ -9,7 +9,7 @@ class UserDAO {
     getUserByID(id) {
         const User = new UserClass()
         return new Promise((resolve, reject) => {
-            this.dao.all("SELECT id_user, username, email, telephone, date_user, pppathfile FROM user WHERE id_user = '" + id + "'")
+            this.dao.all("SELECT id_user, username, email, telephone, date_user, pppathfile, notifpathfile FROM user WHERE id_user = '" + id + "'")
                 .then((data) => {
                     data.forEach(element => {
                         User.id_user = element.id_user
@@ -18,7 +18,7 @@ class UserDAO {
                         User.telephone = element.telephone
                         User.date_user = element.date_user
                         User.pppathfile = element.pppathfile
-
+                        User.notifpathfile = element.notifpathfile
                     });
                 })
                 .then(function () {
@@ -139,6 +139,15 @@ class UserDAO {
                     resolve(User)
                 })
         })
+    }
+
+    setnotifpathfile(id_user_connect, pathfile) {
+        return this.dao.run(
+            `UPDATE user
+            SET notifpathfile = ?
+            WHERE id_user = ?`,
+            [pathfile, id_user_connect])
+
     }
 
     setpppathfile(id_user_connect, pathfile) {

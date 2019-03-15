@@ -14,7 +14,9 @@ function DisplayNotifications() {
                                 </button>
                             </div>
                             <div class="modal-body">
-                                ...
+                            <ul class="list-group">
+                            <li class="list-group-item">` + data + `</li>
+                          </ul>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
