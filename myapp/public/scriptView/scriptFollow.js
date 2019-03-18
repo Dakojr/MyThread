@@ -33,7 +33,7 @@ function DisplayFollower(id_user) {
         </ul>
         </div>
         <div class="modal-footer">
-        <button type="button" onClick= "RemoveChild()" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" onClick="RemoveChild()" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>

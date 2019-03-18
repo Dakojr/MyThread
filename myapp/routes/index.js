@@ -9,7 +9,7 @@ const fs = require('fs')
 
 const router = express.Router()
 router.use(fileupload({
-  limits: { fileSize: 2 * 1024 * 1024 },
+  limits: { fileSize: 2 * 1024 * 1024 }, //2 mb
 }))
 
 var csurfProtect = csurf();
@@ -71,14 +71,11 @@ router.get('/discover', isLoggedIn, (req, res, next) => {
 
 
 router.get('/notifications', isLoggedIn, (req, res, next) => {
-  UserControl.newNotifFile(req.session.passport.user, 'notifications', 'HEHO')
   UserControl.setnotifpathfile(req.session.passport.user, '/' + req.session.passport.user + '/notifications/notifications.html')
   readNotif('./user/' + req.session.passport.user + '/notifications/notifications.html')
     .then((data) => {
       res.json(data)
     })
-  
-  
 })
 
 router.get('/thread?:hashtag', isLoggedIn, (req, res, next) => {
@@ -213,9 +210,15 @@ router.get('/follow', isLoggedIn, (req, res, next) => {
   FollowControl.getFollow(req.query.id_user, req.session.passport.user)
     .then((data) => {
       if (data === false) {
-        FollowControl.FollowButton(req.query.id_user, req.session.passport.user)
-        bool = true
-        res.json(bool)
+        UserControl.getUserByID(req.session.passport.user)
+          .then((userCo) => {
+            UserControl.newNotifFile(req.query.id_user, 'notifications', '\n' + '<a href="/profiles?username=' + userCo.username + '">' + userCo.username + '<a/>' + " vous a Follow !")
+            FollowControl.FollowButton(req.query.id_user, req.session.passport.user)
+            bool = true
+            res.json(bool)
+          })
+
+
       } else {
         FollowControl.unFollowButton(req.query.id_user, req.session.passport.user)
         bool = false
@@ -232,9 +235,19 @@ router.get('/like', isLoggedIn, (req, res, next) => {
   LikeControl.getLike(req.query.id_thread, req.session.passport.user)
     .then((data) => {
       if (data === false) {
-        LikeControl.LikeButton(req.query.id_thread, req.session.passport.user)
-        bool = true
-        res.json(bool)
+
+        ThreadControl.getThreadById(req.query.id_thread)
+          .then((thread) => {
+            UserControl.getUserByID(req.session.passport.user)
+              .then((userCo) => {
+                UserControl.newNotifFile(thread[0].id_user, 'notifications', '\n' + '<a href="/profiles?username=' + userCo.username + '">' + userCo.username + '<a/>' + " a Liker votre Thread <strong>" + thread[0].thread_name + "</strong>")
+                LikeControl.LikeButton(req.query.id_thread, req.session.passport.user)
+                bool = true
+                res.json(bool)
+              })
+          })
+
+
       } else {
         LikeControl.disLikeButton(req.query.id_thread, req.session.passport.user)
         bool = false
@@ -455,9 +468,9 @@ const ReadPushText = async (array) => {
 function readNotif(pathfile) {
   return new Promise((resolve, reject) => {
     ThreadControl.readThread(pathfile)
-    .then((data) => {
-      resolve(data)
-    })
+      .then((data) => {
+        resolve(data)
+      })
   })
 
 }

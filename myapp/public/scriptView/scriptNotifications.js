@@ -1,9 +1,7 @@
 function DisplayNotifications() {
     $.get('/notifications',
         function (data, status) {
-            console.log(data)
-            console.log('hahahahahahaha')
-            var htmlmodal =`
+            var htmlmodal = `
                 <div class="modal fade" id="notifications" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
@@ -14,13 +12,17 @@ function DisplayNotifications() {
                                 </button>
                             </div>
                             <div class="modal-body">
-                            <ul class="list-group">
-                            <li class="list-group-item">` + data + `</li>
+                        <ul class="list-group">`
+
+            data.forEach(element => {
+                htmlmodal += '<li class="list-group-item">' + element + '</li>'
+            });
+
+            htmlmodal += `
                           </ul>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Save changes</button>
+                                <button type="button" class="btn btn-secondary" onClick="RemoveChild()" data-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
