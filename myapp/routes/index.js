@@ -42,7 +42,7 @@ router.get('/', isLoggedIn, (req, res, next) => {
     .then((data) => {
       ReadPushText(data)
         .then((Threads) => {
-          res.render('pages/index', { message: "message", threads: Threads, user_connect: req.session.passport.user, csurfToken: req.csrfToken() })
+          res.render('pages/index', { message: "message", threads: Threads, user_connect: req.session.passport.user, csurfToken: req.csrfToken(), rgpd: true })
         })
     })
 
@@ -61,10 +61,9 @@ router.get('/discover', isLoggedIn, (req, res, next) => {
 
   start()
     .then((data) => {
-      console.log(data)
       ReadPushText(data)
         .then((Threads) => {
-          res.render('pages/index', { message: "message", threads: Threads, user_connect: req.session.passport.user, csurfToken: req.csrfToken() })
+          res.render('pages/index', { message: "message", threads: Threads, user_connect: req.session.passport.user, csurfToken: req.csrfToken(), rgpd: false })
         })
     })
 })
@@ -83,7 +82,7 @@ router.get('/thread?:hashtag', isLoggedIn, (req, res, next) => {
     .then((data) => {
       ReadPushText(data)
         .then((Threads) => {
-          res.render('pages/index', { message: "message", threads: Threads, csurfToken: req.csrfToken(), hashtag: req.query.hashtag, user_connect: req.session.passport.user })
+          res.render('pages/index', { message: "message", threads: Threads, csurfToken: req.csrfToken(), hashtag: req.query.hashtag, user_connect: req.session.passport.user, rgpd: false })
         })
     })
 })
@@ -122,7 +121,7 @@ router.post('/thread/newthread', isLoggedIn, [
         if (arr.length === 0) {
           ThreadControl.newThreadFile(req.session.passport.user, req.body.title, req.body.thread_content)
           ThreadControl.newThread(req.body.title, './user/' + req.session.passport.user + '/threads' + '/' + req.body.title + '.html', "N", req.session.passport.user, req.body.hashtag)
-          res.redirect('/')
+          res.redirect('/profile')
         } else {
           messages.push("Title already take")
           req.flash('errorThread', messages)
@@ -260,8 +259,8 @@ router.get('/like', isLoggedIn, (req, res, next) => {
 
 //USER ROUTES
 
-//PROFIL
-router.get('/profile', isLoggedIn, function (req, res, next) {
+//PROFILE
+router.get('/profile', isLoggedIn, (req, res, next) => {
   var messages = req.flash('errorThread'); //Display the error message in passport.js
   const getUser = () => {
     return new Promise((resolve, reject) => {
@@ -305,6 +304,22 @@ router.get('/profile', isLoggedIn, function (req, res, next) {
     })
 })
 
+router.get('/conditionsrgpd', (req, res, next) => {
+  res.render('pages/conditionsrgpd')
+})
+
+router.get('/deleteaccount', isLoggedIn, (req, res, next) => {
+  UserControl.getUserByID(req.session.passport.user)
+    .then((user) => {
+      res.clearCookie('remember_me');
+      req.logout();
+      UserControl.deleteaccount(user.id_user)
+        .then(() => {
+          res.redirect('/');
+        })
+    })
+})
+
 // PROFILES
 
 router.get('/profiles?:username', isLoggedIn, (req, res, next) => {
@@ -340,21 +355,21 @@ router.get('/profiles?:username', isLoggedIn, (req, res, next) => {
 
 //SIGN UP
 
-router.get('/signup', notLoggedIn, function (req, res, next) {
+router.get('/signup', notLoggedIn, (req, res, next) => {
   var messages = req.flash('error'); //Display the error message in passport.js
   res.render('pages/signup', { csurfToken: req.csrfToken(), messages: messages, hasErrors: messages.length > 0 })
 });
 
 // When Sign Up is Submit if doesn't get an error
 router.post('/signup', passport.authenticate('local.signup', {
-  successRedirect: '/',
+  successRedirect: '/signin',
   failureRedirect: '/signup',
   failureFlash: true
 }));
 
 //SIGN IN
 
-router.get('/signin', notLoggedIn, function (req, res, next) {
+router.get('/signin', notLoggedIn, (req, res, next) => {
   var messages = req.flash('error'); //Display the error message in passport.js
   res.render('pages/signin', { csurfToken: req.csrfToken(), messages: messages, hasErrors: messages.length > 0 })
 })
@@ -375,7 +390,7 @@ router.post('/signin', passport.authenticate('local.signin', {
     });
   },
   function (req, res) {
-    res.redirect('/');
+    res.redirect('/discover');
   });
 
 
@@ -387,7 +402,6 @@ router.get('/logout', isLoggedIn, function (req, res) {
 });
 
 router.post('/uploadavatar', isLoggedIn, (req, res) => {
-  console.log(req.files.avatar.name)
   ThreadControl.newFolderAvatar(req.session.passport.user)
   UserControl.setpppathfile(req.session.passport.user, '/' + req.session.passport.user + '/avatar/avatar.jpg')
     .then(() => {

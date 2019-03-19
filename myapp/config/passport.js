@@ -76,6 +76,13 @@ passport.use('local.signup', new LocalStrategy({
     passReqToCallback: true // allows us to pass back the entire request to the callback
 },
     function (req, username, password, done) {
+
+        if(req.body.password !== req.body.passwordConfirm) {
+            var messages = [];
+            messages.push("Les deux mot de passe se sont pas pareil")
+            return done(null, false, req.flash('error', messages));
+        }
+
         const dao = new AppDAOfs('./db/mythread.db')
         req.checkBody('email', 'Invalid E-mail').notEmpty().isEmail();
         req.checkBody('password', 'Invalid Password').notEmpty();

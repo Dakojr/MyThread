@@ -17,15 +17,18 @@
     <main>
         <input type="hidden" name="_csrf" value="<%= csurfToken %>">
         <% if (User.pppathfile === null) { %>
-        <a href="#" data-target="#uploadavatar" data-toggle="modal"><img src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png" alt="Responsive image"
-            class="pp rounded-circle" ></a>
+        <a href="#" data-target="#uploadavatar" data-toggle="modal"><img
+                src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png" alt="Responsive image"
+                class="pp rounded-circle"></a>
         <% } else { %>
-        <a href="#" data-target="#uploadavatar" data-toggle="modal"><img src="<%= User.pppathfile %>" alt="Responsive image"
-            class="pp rounded-circle" ></a>
+        <a href="#" data-target="#uploadavatar" data-toggle="modal"><img src="<%= User.pppathfile %>"
+                alt="Responsive image" class="pp rounded-circle"></a>
         <% } %>
-   
+
         <div class="container">
             <div class="bottom">
+                <a class="text-muted" href="#" data-toggle="modal" data-target="#deleteaccount" style="float: right;">delete account</a>
+
                 <h3>@<%= User.username %></h3>
                 <div class="justify-content-between d-flex">
                     <strong>Follower</strong>
@@ -60,14 +63,14 @@
             <div class="thread" ondblclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)">
 
 
-            <% if (User.pppathfile === null) { %>
-            <a href="#" data-target="#uploadavatar" data-toggle="modal"><img
-                    src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png" alt="Responsive image"
-                    class="img-thread rounded-circle"></a>
-            <% } else { %>
-            <a href="#" data-target="#uploadavatar" data-toggle="modal"><img src="<%= User.pppathfile %>"
-                    alt="Responsive image" class="img-thread rounded-circle"></a>
-            <% } %>
+                <% if (User.pppathfile === null) { %>
+                <a href="#" data-target="#uploadavatar" data-toggle="modal"><img
+                        src="https://boutique.alforme.fr/wp-content/uploads/2017/08/avatar-homme.png"
+                        alt="Responsive image" class="img-thread rounded-circle"></a>
+                <% } else { %>
+                <a href="#" data-target="#uploadavatar" data-toggle="modal"><img src="<%= User.pppathfile %>"
+                        alt="Responsive image" class="img-thread rounded-circle"></a>
+                <% } %>
 
 
 
@@ -82,11 +85,11 @@
                 <a href="/thread?hashtag=<%- escape(threads[i].hashtag) -%>"
                     class="bottom-hashtag"><%= threads[i].hashtag %></a>
                 <% if (threads[i].liked === false) { %>
-                <a href="#" class="bottom-heart"> <i onclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)"
-                        id="icon<%- x -%>" class="fas fa-heart font-awesome"></i> </a>
+                <i onclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)" id="icon<%- x -%>"
+                    class="bottom-heart fas fa-heart font-awesome"></i>
                 <% } else {%>
-                <a href="#" class="bottom-heart"> <i onclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)"
-                        id="icon<%- x -%>" class="fas fa-heart font-awesome open"></i></a>
+                <i onclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)" id="icon<%- x -%>"
+                    class="bottom-heart fas fa-heart font-awesome open"></i>
                 <% } %>
             </div>
             <% x++  %>
@@ -104,9 +107,11 @@
                             onmouseout="this.style.color='#FA7268';"></i>
                     </div>
                     <div class="modal-body">
-                        <form action="/thread/newthread" method="POST" >
+                        <form action="/thread/newthread" method="POST">
                             <div class="form-group text-center">
                                 <strong for="title">Title</strong>
+                                <p class="text-muted">*le titre du thread ne peut contenir d'espace, ni de caratères
+                                    spécial</p>
                                 <input type="text" class="form-control" name="title" id="title"
                                     placeholder="Enter a title">
                             </div>
@@ -153,6 +158,26 @@
                         </form>
                     </div>
                     <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="deleteaccount" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Delete your account ? (can't comeback)</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sur you want to delete your account ?
+                    </div>
+                    <div class="modal-footer">
+                        <a href="/deleteaccount" type="button" class="btn btn-secondary">Yes</a>
                     </div>
                 </div>
             </div>

@@ -46,7 +46,7 @@ module.exports = {
                     resolve(data)
                 })
         })
-    }, 
+    },
 
     getFollowCountByIdUser: (id_user) => {
         const dao = new AppDAOfs('./db/mythread.db')
@@ -74,7 +74,7 @@ module.exports = {
                     resolve(data)
                 })
         })
-    }, 
+    },
 
     getFollowByIdUser: (id_user) => {
         const dao = new AppDAOfs('./db/mythread.db')
@@ -107,7 +107,7 @@ module.exports = {
         })
     },
 
-    setnotifpathfile: (id_user_connect ,pathfile) => {
+    setnotifpathfile: (id_user_connect, pathfile) => {
         const dao = new AppDAOfs('./db/mythread.db')
         const UserDAO = new UserDAOfs(dao)
         return new Promise((resolve, reject) => {
@@ -121,11 +121,25 @@ module.exports = {
         })
     },
 
-    setpppathfile: (id_user_connect ,pathfile) => {
+    setpppathfile: (id_user_connect, pathfile) => {
         const dao = new AppDAOfs('./db/mythread.db')
         const UserDAO = new UserDAOfs(dao)
         return new Promise((resolve, reject) => {
             UserDAO.setpppathfile(id_user_connect, pathfile)
+                .then(() => {
+                    dao.db.close(() => {
+                        console.log("BDD CLOSE !")
+                    })
+                    resolve('ITS OKAAAAAY')
+                })
+        })
+    },
+
+    deleteaccount: (id_user) => {
+        const dao = new AppDAOfs('./db/mythread.db')
+        const UserDAO = new UserDAOfs(dao)
+        return new Promise((resolve, reject) => {
+            UserDAO.deleteaccount(id_user)
                 .then(() => {
                     dao.db.close(() => {
                         console.log("BDD CLOSE !")

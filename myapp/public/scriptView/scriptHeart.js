@@ -13,7 +13,7 @@ function Like(id, id_thread) {
       id_thread: id_thread
     },
     function (data, status) {
-      if (data === false) {
+      if (data === false) {        
         id.classList.remove('open')
 
       } else {

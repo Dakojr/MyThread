@@ -159,6 +159,13 @@ class UserDAO {
 
     }
 
+    deleteaccount(id_user) {
+        return this.dao.run(
+            `DELETE FROM user
+            WHERE id_user = ` + id_user
+        )
+    }
+
     create(username, password, email, telephone = "") {
         return this.dao.run(
             `INSERT INTO user (username, password, email, telephone) 

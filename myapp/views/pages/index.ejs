@@ -15,6 +15,9 @@
     </header>
 
     <main>
+    <% if (rgpd) { %>
+     <script> alert("Bonjour ! pour le bon fonctionnement de notre site nous utilisons des cookies"); </script>
+     <% } %>
         <% if(hashtag !== undefined) { %>
         <h5 class="text-center"> <%= hashtag %></h5>
         <% } %>
@@ -52,11 +55,11 @@
             <a href="/thread?hashtag=<%- escape(threads[i].hashtag) -%>"
                 class="bottom-hashtag"><%= threads[i].hashtag %></a>
             <% if (threads[i].liked === false) { %>
-            <a href="#" class="bottom-heart"> <i onclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)"
-                    id="icon<%- x -%>" class="fas fa-heart font-awesome"></i></a>
+            <i onclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)"
+                    id="icon<%- x -%>" class="bottom-heart fas fa-heart font-awesome"></i>
             <% } else {%>
-            <a href="#" class="bottom-heart"> <i onclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)"
-                    id="icon<%- x -%>" class="fas fa-heart font-awesome open"></i></a>
+            <i onclick="Like(icon<%- x -%>, <%- threads[i].id_thread -%>)"
+                    id="icon<%- x -%>" class="bottom-heart fas fa-heart font-awesome open"></i>
             <% } %>
         </div>
         <% x++ %>
@@ -76,6 +79,8 @@
                         <form action="/thread/newthread" method="POST">
                             <div class="form-group text-center">
                                 <strong for="title">Title</strong>
+                                <p class="text-muted">*le titre du thread ne peut contenir d'espace, ni de caratères spécial</p>
+
                                 <input type="text" class="form-control" name="title" id="title"
                                     placeholder="Enter a title">
                             </div>
@@ -123,3 +128,15 @@ Voir pour les notifs
 Follower / Following
 
 counter like button
+
+
+
+
+________________
+
+
+ETES VOUS SUR DE LA SUPPRESION DU COMPTE ?
+
+Like qui remonte ( discover )
+
+text muted (title thread, mdp signup)
